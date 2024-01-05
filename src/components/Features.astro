@@ -2,6 +2,20 @@
 import Container from "./Container.astro"
 
 ---
+<style>
+   strong.zap:after {
+    background-image: url("/images/zap.svg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    content: "";
+    display: block;
+    height: .3em;
+    left: -.2em;
+    position: absolute;
+    top: calc(100% - .15em);
+    width: calc(100% + .4em)
+}
+</style>
 
 <div id="features">
   <Container>
@@ -11,10 +25,13 @@ import Container from "./Container.astro"
       </svg>
       
       <h2 class="my-8 text-2xl font-bold text-gray-700 dark:text-white md:text-4xl">
-        A technology-first approach to payments
-        and finance
+        <p>Focusing on <strong class="zap relative">Edge Scenario </strong></p> 
+        <p>Target at <span class="font-extrabold">LLM</span></p>
       </h2>
-      <p class="text-gray-600 dark:text-gray-300">Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus ad ipsum pariatur autem, fugit laborum in atque amet obcaecati? Nisi minima aspernatur, quidem nulla cupiditate nam consequatur eligendi magni adipisci.</p>
+      <p class="text-gray-600 dark:text-gray-300">
+        With optimization including Quantization, Memory Reuse, and Parallelization, we are able to achieve affordable inference latency of LLMs
+        on the edge devices.   
+      </p>
     </div>
     <div
       class="mt-16 grid divide-x divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden rounded-3xl border border-gray-100 text-gray-600 dark:border-gray-700 sm:grid-cols-2 lg:grid-cols-4 lg:divide-y-0 xl:grid-cols-4"
@@ -33,10 +50,10 @@ import Container from "./Container.astro"
             <h5
               class="text-xl font-semibold text-gray-700 dark:text-white transition group-hover:text-secondary"
             >
-              First feature
+              Quantization
             </h5>
             <p class="text-gray-600 dark:text-gray-300">
-              Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.
+             Speed up the inference with FP16/8Bit/6Bit Quantization.
             </p>
           </div>
           <a href="#" class="flex items-center justify-between group-hover:text-secondary">
@@ -61,10 +78,10 @@ import Container from "./Container.astro"
             <h5
               class="text-xl font-semibold text-gray-700 dark:text-white transition group-hover:text-secondary"
             >
-              Second feature
+            Accelerator Support
             </h5>
             <p class="text-gray-600 dark:text-gray-300">
-              Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.
+              Chasing the state-of-the-art speed with AI Accelerator like Qualcomm Hexagon.
             </p>
           </div>
           <a href="#" class="flex items-center justify-between group-hover:text-secondary">
@@ -89,10 +106,10 @@ import Container from "./Container.astro"
             <h5
               class="text-xl font-semibold text-gray-700 dark:text-white transition group-hover:text-secondary"
             >
-              Third feature
+              Multimodal Support
             </h5>
             <p class="text-gray-600 dark:text-gray-300">
-              Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.
+              Support multimodal input like text, image, audio, and video.
             </p>
           </div>
           <a href="#" class="flex items-center justify-between group-hover:text-secondary">
@@ -124,7 +141,7 @@ import Container from "./Container.astro"
               More features
             </h5>
             <p class="text-gray-600 dark:text-gray-300">
-              Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.
+              Visit Our Project Repo!
             </p>
           </div>
           <a href="#" class="flex items-center justify-between group-hover:text-secondary">
