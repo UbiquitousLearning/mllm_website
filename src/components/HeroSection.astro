@@ -2,7 +2,17 @@
 import Container from "./Container.astro"
 
 ---
+<style>
+  #cursor {
+  animation: blink 0.7s infinite;
+}
 
+@keyframes blink {
+  0% {opacity: 1;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+}
+</style>
 <div class="relative" id="home">
     <div aria-hidden="true" class="absolute inset-0 grid grid-cols-2 -space-x-52 opacity-40 dark:opacity-20">
         <div class="blur-[106px] h-56 bg-gradient-to-br from-primary to-purple-400 dark:from-blue-700"></div>
@@ -11,11 +21,14 @@ import Container from "./Container.astro"
     <Container>
         <div class="relative pt-36 ml-auto">
             <div class="lg:w-2/3 text-center mx-auto">
-                <h1 class="text-gray-900 dark:text-white font-bold text-5xl md:text-6xl xl:text-7xl">Shaping a world with <span class="text-primary dark:text-white">reimagination.</span></h1>
-                <p class="mt-8 text-gray-700 dark:text-gray-300">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio incidunt nam itaque sed eius modi error totam sit illum. Voluptas doloribus asperiores quaerat aperiam. Quidem harum omnis beatae ipsum soluta!</p>
+                <h1 class="text-gray-900 dark:text-white font-bold text-5xl md:text-6xl xl:text-7xl">
+                  <p>Chat LLMs🤖 </p><p>with <span class="text-primary dark:text-white font-extrabold" id="multimodal">...<span id="cursor"></span></span></p> <p class="bg-gradient-to-r from-purple-400 via-pink-500 to-yellow-500  bg-clip-text text-transparent">Just On Your Device!</p></h1>
+                <p class="mt-8 text-gray-700 dark:text-gray-300">
+                  MLLM is a Large Model Inference Engine for Multimodal Language Models. It is a lightweight, fast, and scalable inference engine for multimodal language models. It is designed to run on edge devices and can be easily integrated into existing applications.
+                </p>
                 <div class="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
                     <a
-                      href="#"
+                      href="/docs"
                       class="relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
                     >
                       <span class="relative text-base font-semibold text-white"
@@ -23,7 +36,7 @@ import Container from "./Container.astro"
                       >
                     </a>
                     <a
-                      href="#"
+                      href="https://github.com/UbiquitousLearning/mllm"
                       class="relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:border before:border-transparent before:bg-primary/10 before:bg-gradient-to-b before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 dark:before:border-gray-700 dark:before:bg-gray-800 sm:w-max"
                     >
                       <span
@@ -34,20 +47,20 @@ import Container from "./Container.astro"
                 </div>
                 <div class="hidden py-8 mt-16 border-y border-gray-100 dark:border-gray-800 sm:flex justify-between">
                     <div class="text-left">
-                        <h6 class="text-lg font-semibold text-gray-700 dark:text-white">The lowest price</h6>
-                        <p class="mt-2 text-gray-500">Some text here</p>
+                        <h6 class="text-lg font-semibold text-gray-700 dark:text-white">Lightweight</h6>
+                        <p class="mt-2 text-gray-500">Design For Edge/Mobile Scenario</p>
+                    </div>
+                    <div class="text-left mx-3">
+                        <h6 class="text-lg font-semibold text-gray-700 dark:text-white">Multimodal</h6>
+                        <p class="mt-2 text-gray-500">Supported For Multimodal including Vision / Text ...</p>
                     </div>
                     <div class="text-left">
-                        <h6 class="text-lg font-semibold text-gray-700 dark:text-white">The fastest on the market</h6>
-                        <p class="mt-2 text-gray-500">Some text here</p>
-                    </div>
-                    <div class="text-left">
-                        <h6 class="text-lg font-semibold text-gray-700 dark:text-white">The most loved</h6>
-                        <p class="mt-2 text-gray-500">Some text here</p>
+                        <h6 class="text-lg font-semibold text-gray-700 dark:text-white">In Your Packet</h6>
+                        <p class="mt-2 text-gray-500">Easily Integrated in Apps via JNI/Libs</p>
                     </div>
                 </div>
             </div>
-            <div class="mt-12 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
+            <!-- <div class="mt-12 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
                 <div class="p-4 grayscale transition duration-200 hover:grayscale-0">
                     <img src="./images/clients/microsoft.svg" class="h-12 w-auto mx-auto" loading="lazy" alt="client logo" width="" height="" />
                   </div>
@@ -66,7 +79,43 @@ import Container from "./Container.astro"
                 <div class="p-4 grayscale transition duration-200 hover:grayscale-0">
                     <img src="./images/clients/google-cloud.svg" class="h-12 w-auto mx-auto" loading="lazy" alt="client logo" width="" height="" />
                 </div>
-              </div>
+              </div> -->
         </div>
+        <script>
+const textElement = document.getElementById('multimodal');
+const cursorElement = document.getElementById('cursor');
+
+// The text to be typed and deleted
+const textList = ['Text', 'Photos', 'Charts','Even Videos'];
+const emojiList = ['📝', '🏔', '📈','📺'];
+let textIndex = 0;
+let charIndex = 0;
+
+function type() {
+  let text = emojiList[textIndex]+" "+textList[textIndex];
+  if (charIndex < Array.from(text).length) {
+    textElement.textContent += Array.from(text)[charIndex];
+    charIndex++;
+    setTimeout(type, 200);
+  } else {
+    setTimeout(erase, 1000);
+  }
+}
+
+function erase() {
+  let text = emojiList[textIndex]+" "+textList[textIndex];
+
+  if (charIndex > 0) {
+    textElement.textContent = Array.from(text).slice(0, charIndex - 1).join('');
+    charIndex--;
+    setTimeout(erase, 100);
+  } else {
+    textIndex++;
+    if (textIndex >= textList.length) textIndex = 0;
+    setTimeout(type, 200);
+  }
+}
+type()
+        </script>
     </Container>
 </div>
