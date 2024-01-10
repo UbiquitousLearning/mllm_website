@@ -1,0 +1,40 @@
+summary:where(.astro-irruqesl){
+    line-height: 2!important;
+}
+nav > ul a{
+    line-height: 2!important;
+}
+a:where(.astro-irruqesl){
+    line-height: 2!important;
+}
+p{
+    font-size: --sl-text-lg;
+    font-weight:500 ;
+}
+/* nav > ul a[aria-current=true]{
+    font-weight: bolder!important;
+    font-size:medium;
+    background-color: transparent;
+    color: black;
+} */
+
+ins::before{
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    display: inline-block;
+    inset: 0;
+    border-radius: 5px;
+    border: 1.5px solid #487f3bd0;
+    border-inline-width: 1.5px;
+}
+ins{
+    background-color: #8ec77d99;
+    all: unset;
+    display: inline-block;
+    position: relative;
+ 
+    margin-inline:0.025rem;padding: 2px;border-radius: 5px;
+    background: #8ec77d99;
+    background-clip: padding-box
+}

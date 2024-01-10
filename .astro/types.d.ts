@@ -192,9 +192,16 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"Introduction/introduction.mdx": {
-	id: "Introduction/introduction.mdx";
-  slug: "introduction/introduction";
+"Introduction/1.introduction.mdx": {
+	id: "Introduction/1.introduction.mdx";
+  slug: "introduction/1introduction";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"Introduction/2.GetStarted.mdx": {
+	id: "Introduction/2.GetStarted.mdx";
+  slug: "introduction/2getstarted";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

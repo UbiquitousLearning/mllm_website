@@ -9,5 +9,9 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   integrations: [tailwind({}), starlight({
     title: 'MLLM', 
+    customCss: [
+      // Relative path to your custom CSS file
+      './src/styles/custom.css',
+    ],
   })]
 });

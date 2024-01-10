@@ -1,0 +1,9 @@
+---
+const { link="/" } = Astro.props;
+---
+<span id="link">{link}</span>
+<script>
+    const links = document.getElementById('link').textContent;
+    console.log(links);
+    window.location.href = links;
+</script>
