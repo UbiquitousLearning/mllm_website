@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+import starlightPlugin from '@astrojs/starlight-tailwind';
+
 module.exports = {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  content: ['./src/components/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}','./src/pages/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}','./src/layouts/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   presets: [],
   darkMode: 'media', // or 'class'
   theme: {
@@ -964,5 +966,5 @@ module.exports = {
     'active',
     'disabled',
   ],
-  plugins: [],
+  plugins: [starlightPlugin()],
 }

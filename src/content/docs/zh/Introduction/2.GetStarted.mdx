@@ -1,0 +1,69 @@
+---
+title: Get Started
+description: Get started with the mllm Lib.
+---
+
+import {LinkCard} from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+**mllm** 是一个开源项目，你可以在你的项目中自由使用它。你可以在[GitHub](https://github.com/UbiquitousLearning/mllm)上找到源代码。
+该项目也是公开开发和维护的，查看贡献指南看看你如何可以帮助。
+<LinkCard
+  title="贡献指南"
+  description="了解如何为mllm做出贡献。"
+  href="/zh/contributing/contributing"
+/>
+## 在你开始之前
+:::tip
+mllm目前处于测试阶段。我们正在努力使它生产就绪。
+:::
+1. 克隆仓库
+```bash
+git clone https://github.com/UbiquitousLearning/mllm
+```
+2. 检查先决条件
+虽然mllm是一个独立的库，但它需要一些工具来构建项目和一些其他库来加速推理。
+ - [CMake](https://cmake.org/) >= 3.18
+ - OpenMP库
+ - Android NDK工具链 >= 26
+
+## 构建项目
+
+:::note[构建目标]
+目前，mllm可以在Android，Linux和macOS上运行，支持x86_64，arm64的架构。
+:::
+
+mllm提供两种形式的用户界面：<ins>命令行界面Demo</ins>和<ins>Android Demo应用</ins>。
+<Card title="为CLI演示构建" icon="laptop">
+CLI应用默认开启编译,你可以在bin或bin-arm目录中找到可执行文件。
+* 为本机操作系统HostOS构建：
+```bash
+cmake -B build .
+cmake --build build --target all -- -j$(nproc)
+```
+* 为Android构建：（需要NDK）
+```bash
+export ANDROID_NDK=/path/to/your/ndk
+cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
+cmake --build ./build_arm/ --target all -- -j$(nproc)
+```
+</Card>
+<Card title="为Android演示应用构建" icon="puzzle">
+Android演示应用目前处于非常早期的阶段，并且它在一个单独的仓库中进行维护,并通过 `android` 这个子模块来引入.
+1. 拉取子模块
+```bash
+git submodule update --init --recursive # 克隆安卓演示应用
+```
+2. 现在你可以将项目导入到Android Studio并构建它。
+
+:::note[构建JNI库]
+mllm JNI库的二进制文件随Android演示应用一起提供。你可以在`android/app/src/main/cpp/libs`目录中找到它。
+但是，如果你想自己构建它，可以按照以下步骤操作：
+```bash
+export ANDROID_NDK=/path/to/your/ndk
+cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DAPK=ON -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
+cmake --build ./build_arm/ --target all -- -j$(nproc)
+```
+libmllm_lib.a应该位于build_arm目录中。
+:::
+</Card>

@@ -2,3 +2,72 @@
 title: Get Started
 description: Get started with the mllm Lib.
 ---
+import {LinkCard} from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+**mllm** is a open-source project and you can freely use it in your projects. You can find the source code on [GitHub](https://github.com/UbiquitousLearning/mllm).
+The project is also developed and maintained publicly , check out the [Contributing Guide](/contributing/contributing) to see how you can help.
+<LinkCard
+  title="Contributing Guide"
+  description="Learn how to contribute to mllm."
+  href="/contributing/contributing"
+/>
+## Before you start
+:::tip
+**mllm** is currently in beta. We are working hard to make it production ready.
+:::
+1. Clone the repository
+```bash
+git clone https://github.com/UbiquitousLearning/mllm
+```
+2. Check prerequisites
+Although **mllm** is a standalone library, it requires some tools to build the project and some other libs to accelerating the inference.
+ - [CMake](https://cmake.org/download/)  >= 3.18
+ - OpenMP Libs.
+ - Android NDK Toolchains >= 26
+
+## Build the project
+
+:::note[Build Target]
+Currently, mllm can run on Android, Linux and macOS with architectures of x86_64, arm64.
+:::
+
+mllm Offers two forms of user interface: <ins> Command Line Interface Demo </ins> and <ins> a Android Demo App </ins>.
+<Card title="Build For CLI Demo" icon="laptop">
+ClI Apps are built by default. You can find the executable file in the `bin` or `bin-arm` directory.
+* To Build for Host OS:
+```bash
+cmake -B build .
+cmake --build build --target all -- -j$(nproc)
+```
+* To Build for Android: (NDK is required)
+```bash
+export ANDROID_NDK=/path/to/your/ndk
+cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
+cmake --build ./build_arm/ --target all -- -j$(nproc)
+```
+
+</Card>
+<Card title="Build For Android Demo App" icon="puzzle">
+Android Demo App is currently in a very early stage, and it is maintained in a separate repository. You can find it in the `android` sub-module.
+1. Fetch the sub-module
+```bash
+git submodule update --init --recursive # clone the android demo app
+```
+2. Now you can import the project into Android Studio and build it.
+
+:::note[Build JNI Libs]
+The mllm JNI Libs Binary is provided along with the Android Demo App. You can find it in the `android/app/src/main/cpp/libs` directory.
+But if you want to build it yourself, you can follow the steps below:
+```bash
+export ANDROID_NDK=/path/to/your/ndk
+cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DAPK=ON -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
+cmake --build ./build_arm/ --target all -- -j$(nproc)
+```
+The `libmllm_lib.a` should locate in the `build_arm` directory.
+:::
+</Card>
+
+
+
+

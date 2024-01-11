@@ -192,6 +192,27 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"Contributing/Add_new_operator.mdx": {
+	id: "Contributing/Add_new_operator.mdx";
+  slug: "contributing/add_new_operator";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"Contributing/Contributing.mdx": {
+	id: "Contributing/Contributing.mdx";
+  slug: "contributing/contributing";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"Contributing/Support_new_model.mdx": {
+	id: "Contributing/Support_new_model.mdx";
+  slug: "contributing/support_new_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "Introduction/1.introduction.mdx": {
 	id: "Introduction/1.introduction.mdx";
   slug: "introduction/1introduction";
@@ -202,6 +223,41 @@ declare module 'astro:content' {
 "Introduction/2.GetStarted.mdx": {
 	id: "Introduction/2.GetStarted.mdx";
   slug: "introduction/2getstarted";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Contributing/Add_new_operator.mdx": {
+	id: "zh/Contributing/Add_new_operator.mdx";
+  slug: "zh/contributing/add_new_operator";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Contributing/Contributing.mdx": {
+	id: "zh/Contributing/Contributing.mdx";
+  slug: "zh/contributing/contributing";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Contributing/Support_new_model.mdx": {
+	id: "zh/Contributing/Support_new_model.mdx";
+  slug: "zh/contributing/support_new_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Introduction/1.introduction.mdx": {
+	id: "zh/Introduction/1.introduction.mdx";
+  slug: "zh/introduction/1introduction";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Introduction/2.GetStarted.mdx": {
+	id: "zh/Introduction/2.GetStarted.mdx";
+  slug: "zh/introduction/2getstarted";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

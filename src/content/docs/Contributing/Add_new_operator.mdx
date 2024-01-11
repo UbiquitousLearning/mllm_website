@@ -1,0 +1,203 @@
+---
+title: Add new operator
+description: How to add a new operator to the framework.
+---
+
+# Custom Operators (Op)
+
+:::tip
+Before customizing the Op, please refer to the [Op list document]() to avoid unnecessary duplication.
+:::
+
+The steps to add an Op are as follows:
+1. Add the implementation of the Op for the corresponding Backend ([CPU](#CPU)).
+2. [Add the enumeration of the Op types](#Add-the-enumeration-of-the-Op-types).
+2. [Register the implemented Op for the corresponding Backend](#Register-the-implemented-Op-for-the-corresponding-Backend).
+3. [Add the frontend representation of the Op](#Add-the-frontend-representation-of-the-Op).
+
+## Add the implementation of the Op for the corresponding Backend
+### CPU
+1. Add CPUAbc.hpp and CPUAbc.cpp to the [CPU directory](https://github.com/UbiquitousLearning/mllm/tree/develop/src/backends/cpu), or you can generate the two files by running [new_op.py](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/new_op.py).
+2. Class declaration. Inherit from the base class Op and mainly implement methods like reshape() and execute().
+3. Implement CPUOpCreator.
+
+Here is an example:
+```cpp
+#ifndef MLLM_CPUABC_H
+#define MLLM_CPUABC_H
+
+#include "Op.hpp"
+#include "CPUBackend.hpp"
+
+namespace mllm {
+
+class CPUAbc final : public Op {
+public:
+    CPUAbc(Backend *bn, string opName, int param1, bool param2, int threadCount);
+    virtual ~CPUAbc() = default;
+    // Calculate the size of the outputs Tensor
+    virtual ErrorCode reshape(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+    // Perform the calculation and assign values to outputs
+    virtual ErrorCode execute(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+    // Load weight parameters (not required to override)
+    virtual ErrorCode load(AbstructLoader &loader) override;
+    // Free weight parameters, appearing in pairs with load (not required to override)
+    virtual ErrorCode free(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+    // Manage the memory for outputs(inputs) (not required to override)
+    virtual ErrorCode setUp(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+
+private:
+    // Parameters of Op
+    int param1_;
+    bool param2_;
+    int thread_count = 4;
+};
+
+class CPUAbcCreator : public CPUBackend::Creator {
+public:
+    virtual Op *create(OpParam op_param, Backend *bn, string name, int threadCount) const {
+        // Read the parameters of CPUAbc here
+        // OpParam is a vector<float>
+        int param1 = (int)op_param["param1"];
+        bool param2 = (bool)op_param["param2"];
+        return new CPUAbc(bn, name, param1, param2, threadCount);
+    }
+};
+
+} // namespace mllm
+
+#endif // MLLM_CPUABC_H
+```
+
+
+## Add the enumeration of the Op types
+
+Add the enumeration of the Op types in the [OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/include/OpDefined.hpp) file.
+```cpp
+#ifndef MLLM_OPDEFINED_H
+#define MLLM_OPDEFINED_H
+
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
+
+namespace mllm {
+enum OpType {
+    INVALID_VALUE = 0,
+    PARAMETER,
+    ADD,
+    ... ...
+    ABC, //<==Add here
+    OP_NUM
+};
+
+static const vector<string> OpNames = {
+    "INVALID_VALUE",
+    "Parameter",
+    "Add",
+    ... ...   
+    "Abc", //<==Add here
+    "OP_NUM"};
+} // namespace mllm
+#endif
+```
+
+
+
+## Register the implemented Op for the corresponding Backend
+
+1. Include CPUAbc.hpp in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L34) file.
+2. Add the addCreator function in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L86) file.
+```cpp
+#include "CPUBackend.hpp"
+#include "CPUView.hpp"
+    ... ...
+#include "CPUAbc.hpp" //<==Add here
+
+    ... ...
+    ... ...
+
+void CPUBackend::registerOps() {
+    addCreator(PARAMETER, (CPUBackend::Creator *)(new CPUParameterCreator()));
+    ... ...
+    addCreator(ABC, (CPUBackend::Creator *)(new CPUAbcCreator())); //<==Add here
+}
+```
+
+
+## Add the frontend representation of the Op
+Implement the frontend representation of the Op in the [express](https://github.com/UbiquitousLearning/mllm/tree/develop/src/express) directory. You can choose to implement it as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71) or as a [function](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21).
+
+### Ⅰ. Implement as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71).
+
+1. Add the declaration in [ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp)
+```cpp
+
+typedef struct TNetTensor {
+    string name;
+    vector<int> shape_;
+    DataType type;
+    NetOp *in;
+    vector<NetOp *> out;
+    NetParameter *subgraph;
+    Context *ctx;
+
+    ... ...
+
+    NetTensor *abc(int param1, bool param2); //<==Add here
+
+} NetTensor;
+
+```
+2. Implement the function in [ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.cpp)
+```cpp
+
+## 翻译 private_upload/default/2024-01-11-02-36-54/Add_new_operator_CN.md.part-1.md
+
+```cpp
+NetTensor *TNetTensor::abc(int param1, bool param2) {
+    Context *ctx = this->ctx;
+    NetTensor *out_tensor = new NetTensor();
+    out_tensor->name = "outtensor-" + name + "_adc_" + "-00";//
+    ... ...
+    net_op_->name = name + "_abc_"; // ensure that name + "_abc_" is the same
+    ... ...
+    net_op_->param["type"] = ABC; // OpType type
+    net_op_->param["param1"] = (float)param1; // ensure that param is the same as op_param in CPUOpCreator
+    net_op_->param["param2"] = (float)param2; // ensure that param is the same as op_param in CPUOpCreator
+    ... ...
+    return out_tensor;
+}
+
+```
+
+### Ⅱ. Implementation as a [function](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21).
+
+1. Add declaration in [Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp)
+```cpp
+NetTensor *_Abc(std::vector<NetTensor *> inputs, int param1, bool param2, string name = "");
+```
+2. Implement the function in [Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.cpp)
+```cpp
+
+NetTensor *_Abc(std::vector<NetTensor *> inputs,  int param1, bool param2, string name) {
+    Context *ctx = inputs[0]->ctx;
+    NetTensor *out_tensor = new NetTensor();
+    if (name.empty()) {
+        name = "Abc" + std::to_string(ctx->idx);
+    }
+    out_tensor->name = "outtensor-" + name + "-00";
+    out_tensor->type = inputs[0]->type;
+    ctx->idx++;
+    _STORE_OUT_TENSOR
+    _NEW_OP(mllm::ABC) // OpType type
+    net_op_->param["param1"] = (float)param1; // ensure that param is the same as op_param in CPUOpCreator
+    net_op_->param["param2"] = (float)param2; // ensure that param is the same as op_param in CPUOpCreator
+    _UPDATE_INPUT_TENSORS
+    out_tensor->in = net_op_;
+    out_tensor->ctx = ctx;
+    return out_tensor;
+}
+```
+

@@ -1,0 +1,55 @@
+---
+title: Contribution Guide
+description: This page describes the contribution process for mllm.
+---
+
+Contributing to **mllm** is a streamlined process. We welcome a wide spectrum of enhancements including, but not limited to, rectification of bugs or typographical errors, code refinement, introduction of novel features and performance optimization. The typical contribution workflow is outlined below:
+- (Optional)Learn the basic knowledge about **mllm**.
+- Read the tutorial to clone the data and run **mllm**.
+- Adhere to the [prescribed steps](#steps-for-contribution) to implement your modifications.
+- Contribute the code in the [specified format](#format-for-submissions).
+
+## Steps for Contribution
+
+1. You can find the tasks by yourself, such as [support a new model](Support_new_model.md) or [add a new operator](Add_new_operator.md).
+2. Fulfill the development criteria, submit your code via a Pull Request (PR), and ensure it passes the GitHub Continuous Integration (CI) tests.
+3. Revise your submission based on reviewer feedback until its incorporated. Note that every PR merge demands approval from the respective subsystem's maintainer. When you address the concerns, do not add a new commit. Just replace reset the old commits, add new commits and push force your original patches. PRs should be merged in rebase format, eschewing intermediate merge commits.
+4. If you have any questions about the subsystem, you can find the relevant maintainers [here]().
+
+## Format for Submissions
+
+1. First, the format of the commit title should be as follows: `type: content`
+  - Type: 
+    - feat：A new feature.
+    - fix：Fix bugs
+    - style：Format (changes that do not affect code execution).
+    - refactor：Refactor (i.e., it is not a code change that adds new features or modifies bugs).
+    - perf：Optimization related, such as improving performance and experience.
+    - chore：Changes in the construction process or auxiliary tools.
+  - Content: a succinct description of the modification;
+    - For bug fix, it should be: fix the bug of ......
+    - For new features, clearly delineate the feature's attributes.
+    - For patch issues, it needs to specify the range of the round patch. The round patch cannot be included in a large commit; keep the shape of the original commit
+2. The commit message must thoroughly describe the content of this modification
+  - For functionality-related commits: outline the added feature or the specific alterations made.
+  - For bug fix commits: elucidate the bug's origin and the methodology of its resolution.
+3. Add an issue link on a separate line in the commit message for each one to facilitate traceability
+4. Additional Note:
+  -  Refrain from including Chinese text in the commit message.
+  -  If using English colons, add a space after them
+  -  Does not forget to add "Signed-off-by sign" in the git commit message.
+5.  A PR commit Example:
+    ```
+      Title
+      feat:add CPUConveluation1D operator
+
+      Message
+      A brief introduction to CPUConveluation1D...
+
+      Usage:
+      i = _Conveluation1D({i}, kernal, stride, bias, ...);
+
+      https://github_issue_link
+
+      Signed-off-by: 
+    ```

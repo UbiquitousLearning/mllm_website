@@ -1,0 +1,196 @@
+---
+title: 添加新Op
+description: 添加新Op
+---
+
+# 自定义算子（Op）
+在自定义Op前，请参阅[Op列表文档]()，避免不必要的重复。
+
+添加Op包含如下步骤：
+1. 添加对应的Backend的Op实现([CPU](#CPU))
+2. [添加Op的类型枚举](#添加Op的类型枚举)
+2. [在对应的Backend注册实现的Op](#在对应的Backend注册实现的Op)
+3. [添加Op的前端表示](#添加Op的前端表示)
+
+##  添加对应的Backend的Op实现
+### CPU
+1. 在[CPU目录](https://github.com/UbiquitousLearning/mllm/tree/develop/src/backends/cpu)下添加CPUAbc.hpp、CPUAbc.cpp，也可以运行[new_op.py](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/new_op.py)生成两文件。
+2. 类声明。 继承基类Op，主要实现reshape()和execute()等。
+3. 实现CPUOpCreator。
+
+示例如下：
+```cpp
+#ifndef MLLM_CPUABC_H
+#define MLLM_CPUABC_H
+
+#include "Op.hpp"
+#include "CPUBackend.hpp"
+
+namespace mllm {
+
+class CPUAbc final : public Op {
+public:
+    CPUAbc(Backend *bn, string opName, int param1, bool param2, int threadCount);
+    virtual ~CPUAbc() = default;
+    //计算outputs的Tensor大小
+    virtual ErrorCode reshape(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+    //进行计算，对outputs赋值
+    virtual ErrorCode execute(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+    //加载权重参数（非必须重载）
+    virtual ErrorCode load(AbstructLoader &loader) override;
+    //释放权重参数， 与load成对出现（非必须重载）
+    virtual ErrorCode free(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+    //对outputs(inputs)进行内存管理（非必须重载）
+    virtual ErrorCode setUp(vector<shared_ptr<Tensor>> inputs, vector<shared_ptr<Tensor>> outputs) override;
+
+private:
+    // Op的参数
+    int param1_;
+    bool param2_;
+    int thread_count = 4;
+};
+
+class CPUAbcCreator : public CPUBackend::Creator {
+public:
+    virtual Op *create(OpParam op_param, Backend *bn, string name, int threadCount) const {
+        //在此处读取CPUAbc的参数
+        //OpParam为vector<float>
+        int param1 = (int)op_param["param1"];
+        bool param2 = (bool)op_param["param2"];
+        return new CPUAbc(bn, name, param1, param2, threadCount);
+    }
+};
+
+} // namespace mllm
+
+#endif // MLLM_CPUABC_H
+```
+
+
+##  添加Op的类型枚举
+
+在[OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/include/OpDefined.hpp)文件中添加Op的类型枚举。
+```cpp
+#ifndef MLLM_OPDEFINED_H
+#define MLLM_OPDEFINED_H
+
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
+
+namespace mllm {
+enum OpType {
+    INVALID_VALUE = 0,
+    PARAMETER,
+    ADD,
+    ... ...
+    ABC, //<==在此添加
+    OP_NUM
+};
+
+static const vector<string> OpNames = {
+    "INVALID_VALUE",
+    "Parameter",
+    "Add",
+    ... ...   
+    "Abc", //<==在此添加
+    "OP_NUM"};
+} // namespace mllm
+#endif
+```
+
+
+
+##  在对应的Backend注册实现的Op
+
+1. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L34)文件中引用CPUAbc.hpp
+2. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L86)文件中添加addCreator
+```cpp
+#include "CPUBackend.hpp"
+#include "CPUView.hpp"
+    ... ...
+#include "CPUAbc.hpp" //<==在此添加
+
+    ... ...
+    ... ...
+
+void CPUBackend::registerOps() {
+    addCreator(PARAMETER, (CPUBackend::Creator *)(new CPUParameterCreator()));
+    ... ...
+    addCreator(ABC, (CPUBackend::Creator *)(new CPUAbcCreator())); //<==在此添加
+}
+```
+
+
+## 添加Op的前端表示
+在[express](https://github.com/UbiquitousLearning/mllm/tree/develop/src/express)目录下实现Op的前端表示，你可以选择实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71)的方法或者实现为一个[函数](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21)
+
+### Ⅰ. 实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71)的方法。 
+
+1. 在[ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp)中添加声明
+```cpp
+
+typedef struct TNetTensor {
+    string name;
+    vector<int> shape_;
+    DataType type;
+    NetOp *in;
+    vector<NetOp *> out;
+    NetParameter *subgraph;
+    Context *ctx;
+
+    ... ...
+
+    NetTensor *abc(int param1, bool param2); //<==在此添加
+
+} NetTensor;
+
+```
+2. 在[ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.cpp)中实现函数
+```cpp
+
+NetTensor *TNetTensor::abc*(int param1, bool param2) {
+    Context *ctx =this->ctx;
+    NetTensor *out_tensor = new NetTensor();
+    out_tensor->name = "outtensor-" + name+ "_adc_" + "-00";//
+    ... ...
+    net_op_->name = name+ "_abc_";//保证 name+ "_abc_" 相同
+    ... ...
+    net_op_->param["type"] = ABC;//OpType类型
+    net_op_->param["param1"] = (float)param1; //param保证与CPUOpCreator中的op_param相同
+    net_op_->param["param2"] = (float)param2; //param保证与CPUOpCreator中的op_param相同
+    ... ...
+    return out_tensor;
+}
+
+```
+
+### Ⅱ. 实现为[函数](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21)。
+
+1. 在[Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp)中添加声明
+```cpp
+NetTensor *_Abc(std::vector<NetTensor *> inputs, int param1, bool param2, string name = "");
+```
+2. 在[Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.cpp)中实现函数
+```cpp
+
+NetTensor *_Abc(std::vector<NetTensor *> inputs,  int param1, bool param2, string name) {
+    Context *ctx = inputs[0]->ctx;
+    NetTensor *out_tensor = new NetTensor();
+    if (name.empty()) {
+        name = "Abc" + std::to_string(ctx->idx);
+    }
+    out_tensor->name = "outtensor-" + name + "-00";
+    out_tensor->type = inputs[0]->type;
+    ctx->idx++;
+    _STORE_OUT_TENSOR
+    _NEW_OP(mllm::ABC)//OpType类型
+    net_op_->param["param1"] = (float)param1; //param保证与CPUOpCreator中的op_param相同
+    net_op_->param["param2"] = (float)param2; //param保证与CPUOpCreator中的op_param相同
+    _UPDATE_INPUT_TENSORS
+    out_tensor->in = net_op_;
+    out_tensor->ctx = ctx;
+    return out_tensor;
+}
+```

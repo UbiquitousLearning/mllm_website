@@ -38,3 +38,6 @@ ins{
     background: #8ec77d99;
     background-clip: padding-box
 }
+li{
+list-style: unset!important;
+}
