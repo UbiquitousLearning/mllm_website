@@ -36,20 +36,32 @@ git clone https://github.com/UbiquitousLearning/mllm
 mllm提供两种形式的用户界面：<ins>命令行界面Demo</ins>和<ins>Android Demo应用</ins>。
 <Card title="为CLI演示构建" icon="laptop">
 CLI应用默认开启编译,你可以在bin或bin-arm目录中找到可执行文件。
+:::tip
+注意,在执行二进制文件之前,你需要将模型文件和Tokenizer 放置在当前目录下的models目录中。
+:::
 * 为本机操作系统HostOS构建：
 ```bash
-cmake -B build .
-cmake --build build --target all -- -j$(nproc)
+cd scripts && ./build.sh
 ```
 * 为Android构建：（需要NDK）
 ```bash
 export ANDROID_NDK=/path/to/your/ndk
-cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
-cmake --build ./build_arm/ --target all -- -j$(nproc)
+cd scripts && ./build_android.sh
 ```
+二进制Demo应用应该位于bin或bin-arm目录中,如果需要在Android平台上测试命令行Demo,你可以使用`adb push`命令将二进制文件推送到设备上,并通过`adb shell`命令运行它。
+:::tip
+针对最常用的LLAMA模型,我们给出一个运行脚本来使用adb来快速测试mllm的性能。
+在运行脚本前,你需要将模型文件和Tokenizer推送到设备 /data/local/tmp/mllm/models 目录下。
+```bash
+cd scripts && ./llama_exe.sh
+```
+:::
 </Card>
 <Card title="为Android演示应用构建" icon="puzzle">
 Android演示应用目前处于非常早期的阶段，并且它在一个单独的仓库中进行维护,并通过 `android` 这个子模块来引入.
+:::tip
+注意,当你使用Android Demo App时,你需要在启动App前将模型文件和Tokenizer推送到设备 /sdcard/Download/model 目录下。
+:::
 1. 拉取子模块
 ```bash
 git submodule update --init --recursive # 克隆安卓演示应用
@@ -65,5 +77,11 @@ cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake
 cmake --build ./build_arm/ --target all -- -j$(nproc)
 ```
 libmllm_lib.a应该位于build_arm目录中。
+
+我们也提供了一个脚本来快速构建Android Demo App:
+```bash
+cd scripts && ./build_android_app.sh
+```
 :::
+
 </Card>

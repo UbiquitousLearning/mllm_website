@@ -1,5 +1,5 @@
 ---
-title: Get Started
+title: 快速开始
 description: Get started with the mllm Lib.
 ---
 import {LinkCard} from '@astrojs/starlight/components';
@@ -35,21 +35,34 @@ Currently, mllm can run on Android, Linux and macOS with architectures of x86_64
 mllm Offers two forms of user interface: <ins> Command Line Interface Demo </ins> and <ins> a Android Demo App </ins>.
 <Card title="Build For CLI Demo" icon="laptop">
 ClI Apps are built by default. You can find the executable file in the `bin` or `bin-arm` directory.
+:::tip
+Please note, before executing the binary file, you need to place the model files and Tokenizer in the models directory under the current directory.
+:::
 * To Build for Host OS:
 ```bash
-cmake -B build .
-cmake --build build --target all -- -j$(nproc)
+cd scripts && ./build.sh
 ```
 * To Build for Android: (NDK is required)
 ```bash
 export ANDROID_NDK=/path/to/your/ndk
-cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
-cmake --build ./build_arm/ --target all -- -j$(nproc)
+cd scripts && ./build_android.sh
 ```
-
+The binary demo application should be located in the bin or bin-arm directory. If you need to test the command line demo on the Android platform, you can use the `adb push` command to push the binary file to the device, and run it with the `adb shell` command.
+:::tip
+For the most commonly used LLAMA model, we provide a run script to use adb to quickly test the performance of mllm.
+Before running the script, you need to push the model files and Tokenizer to the /data/local/tmp/mllm/models directory on the device.
+```bash
+cd scripts && ./llama_exe.sh
+```
+:::
 </Card>
 <Card title="Build For Android Demo App" icon="puzzle">
 Android Demo App is currently in a very early stage, and it is maintained in a separate repository. You can find it in the `android` sub-module.
+
+::tip
+Please note, when using the Android Demo App, you need to push the model files and Tokenizer to the /sdcard/Download/model directory on the device before launching the App.
+:::
+
 1. Fetch the sub-module
 ```bash
 git submodule update --init --recursive # clone the android demo app
@@ -65,6 +78,11 @@ cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake
 cmake --build ./build_arm/ --target all -- -j$(nproc)
 ```
 The `libmllm_lib.a` should locate in the `build_arm` directory.
+
+For Your Convenience, we also provide a script to build the whole App:
+```bash
+cd scripts && ./build_android_app.sh
+```
 :::
 </Card>
 
