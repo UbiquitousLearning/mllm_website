@@ -227,6 +227,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"Roadmap/Roadmap.mdx": {
+	id: "Roadmap/Roadmap.mdx";
+  slug: "roadmap/roadmap";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "zh/Contributing/Add_new_operator.mdx": {
 	id: "zh/Contributing/Add_new_operator.mdx";
   slug: "zh/contributing/add_new_operator";
@@ -258,6 +265,13 @@ declare module 'astro:content' {
 "zh/Introduction/2.GetStarted.mdx": {
 	id: "zh/Introduction/2.GetStarted.mdx";
   slug: "zh/introduction/2getstarted";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Roadmap/Roadmap.mdx": {
+	id: "zh/Roadmap/Roadmap.mdx";
+  slug: "zh/roadmap/roadmap";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

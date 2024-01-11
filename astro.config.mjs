@@ -7,7 +7,7 @@ import tailwind from "@astrojs/tailwind";
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind({}), starlight({
-    title: 'MLLM', 
+    title: 'mllm', 
     social: {
       github: 'https://github.com/UbiquitousLearning/mllm'
     },locales: {
@@ -25,6 +25,17 @@ export default defineConfig({
     customCss: [
       // Relative path to your custom CSS file
       './src/styles/custom.css',
-    ],
+    ],sidebar:[
+      {
+        label: 'Introduction',
+        autogenerate:{directory:'Introduction'}
+      },{
+        label: 'Contributing',
+        autogenerate:{directory:'Contributing'}
+      },{
+        label: 'Roadmap',
+        autogenerate:{directory:'Roadmap'}
+      }
+    ]
   })]
 });
