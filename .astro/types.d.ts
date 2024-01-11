@@ -213,16 +213,16 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"Introduction/1.introduction.mdx": {
-	id: "Introduction/1.introduction.mdx";
-  slug: "introduction/1introduction";
+"Introduction/GetStarted.mdx": {
+	id: "Introduction/GetStarted.mdx";
+  slug: "introduction/getstarted";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"Introduction/2.GetStarted.mdx": {
-	id: "Introduction/2.GetStarted.mdx";
-  slug: "introduction/2getstarted";
+"Introduction/Introduction.mdx": {
+	id: "Introduction/Introduction.mdx";
+  slug: "introduction/introduction";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
@@ -255,16 +255,16 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"zh/Introduction/1.introduction.mdx": {
-	id: "zh/Introduction/1.introduction.mdx";
-  slug: "zh/introduction/1introduction";
+"zh/Introduction/GetStarted.mdx": {
+	id: "zh/Introduction/GetStarted.mdx";
+  slug: "zh/introduction/getstarted";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
-"zh/Introduction/2.GetStarted.mdx": {
-	id: "zh/Introduction/2.GetStarted.mdx";
-  slug: "zh/introduction/2getstarted";
+"zh/Introduction/Introduction.mdx": {
+	id: "zh/Introduction/Introduction.mdx";
+  slug: "zh/introduction/introduction";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">
