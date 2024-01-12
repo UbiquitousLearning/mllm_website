@@ -50,3 +50,10 @@ aside.starlight-aside{
 	border-color: var(--sl-color-accent);
 	background-color: var(--sl-color-accent-low);
 }
+.task-list-item input[checked="true"]:before {
+    content: "✅";
+    visibility: visible;
+    /* margin: -5px; */
+    top: -0.5rem;
+    position: relative;
+}
