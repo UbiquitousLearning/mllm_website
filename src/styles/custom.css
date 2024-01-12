@@ -57,6 +57,9 @@ aside.starlight-aside{
     top: -0.5rem;
     position: relative;
 }
+.task-list-item input[checked="true"] {
+    visibility: hidden;
+}
 li.task-list-item {
     list-style: none!important;
 }
