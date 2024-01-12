@@ -50,3 +50,6 @@ aside.starlight-aside{
 	border-color: var(--sl-color-accent);
 	background-color: var(--sl-color-accent-low);
 }
+li.task-list-item {
+    list-style: none!important;
+}
