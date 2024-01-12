@@ -57,3 +57,6 @@ aside.starlight-aside{
     top: -0.5rem;
     position: relative;
 }
+li.task-list-item {
+    list-style: none!important;
+}
