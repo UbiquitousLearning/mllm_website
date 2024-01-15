@@ -3,6 +3,22 @@ import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/Head.astro';
 const base = import.meta.env.BASE_URL;
 ---
-<base href={base+'/'} />
+
+<meta name="base" content={base+'/'} >
+{base}/
+</meta>
+<script>
+    const base = document.head.querySelector('meta[name="base"]').textContent;
+    console.log(base);
+    //listen for changes of route
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.sl-markdown-content a').forEach((link) => {
+            if (link.href.startsWith("/")&&!link.href.startsWith(base)) {
+                link.href = base+"/"+link.href;
+            }
+        });
+    });
+
+</script>
 <Default {...Astro.props}><slot /></Default>
 
