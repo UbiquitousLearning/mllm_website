@@ -1,20 +1,53 @@
 ---
 title: Roadmap
+tableOfContents: false
 ---
-import {Card} from "@astrojs/starlight/components"
+import {Card,CardGrid} from "@astrojs/starlight/components"
 
-We aim to augment **mllm** across four distinct dimensions:
+We aim to augment mllm across four distinct dimensions:
 
-
+<CardGrid>
 <Card title="More OP" icon="random">
-- [ ] Convelution1D
+- [x] Add
+- [x] AvgPool2D
+- [x] Backend
+- [x] Cat
+- [x] Causal Mask
+- [x] Convolution 2D
+- [x] Convolution 3D
+- [x] Division
+- [x] Embedding
+- [x] GELU
+- [x] Gather
+- [x] KVCache
+- [x] LayerNorm
+- [x] Linear
+- [x] Matmul
+- [x] MaxPool2D
+- [x] Mean
+- [x] Mul
+- [x] Norm
+- [x] QuickGELU
+- [x] RMSNorm
+- [x] ReLU
+- [x] ReLU Squared
+- [x] RoPE
+- [x] Scale
+- [x] Shape
+- [x] SiLU
+- [x] SoftMax
+- [x] Split
+- [x] SubDim
+- [x] Transpose
+- [x] View
+- [ ] Convelution 1D
 - [ ] Depth-wise Convolution
 - [ ] Batch Normalization
 
 </Card>
 
 <Card title="More Backends"  icon="random">
-
+- [x] ARM Neon
 - [x] QNN 
 - [ ] OpenCL
 - [ ] OpenGL
@@ -24,6 +57,12 @@ We aim to augment **mllm** across four distinct dimensions:
 
 <Card title="More Models" icon="random">
 
+- [x] Llama
+- [x] Alpaca
+- [x] Persimmon
+- [x] fuyu
+- [x] Vit
+- [x] ImageBind
 - [x] TinyLlama
 - [ ] Stable Diffusion
 - [ ] OPT
@@ -46,3 +85,9 @@ We aim to augment **mllm** across four distinct dimensions:
 - [ ] QWen
 - [ ] Kosmos-2
 </Card>
+
+<Card title="Improvement" icon="random">
+- [ ] Sparsity Inference
+- [ ] Memory-efficient Inference
+</Card>
+</CardGrid>
