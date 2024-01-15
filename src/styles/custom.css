@@ -63,3 +63,8 @@ aside.starlight-aside{
 li.task-list-item {
     list-style: none!important;
 }
+
+li.task-list-item {
+    width: 40%;
+    float: left;
+}
