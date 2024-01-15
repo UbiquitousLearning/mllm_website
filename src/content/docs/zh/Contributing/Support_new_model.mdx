@@ -5,8 +5,9 @@ sidebar:
 ---
 
 # 添加新模型
+:::tip
 在添加新模型前，请参阅[模型列表文档]()，避免不必要的重复。
-
+:::
 添加Op包含如下步骤：
 1. （可选）[增加新的Tokenizer](#增加新的Tokenizer)
 1. （可选）[增加新的PreProcessor](#增加新的PreProcessor)
@@ -166,6 +167,6 @@ ex.run(&net, {input_text, input_img});
 auto result = ex.result();
 
 7. 进行postProcessing。
-``````cpp
+```cpp
 auto probs = postProcessing(result[0]);
 ```
