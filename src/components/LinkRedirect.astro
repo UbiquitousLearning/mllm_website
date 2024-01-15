@@ -1,9 +1,16 @@
 ---
 const { link="/" } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
 <span id="link">{link}</span>
+<span id="base">{base}</span>
 <script>
-    const links = document.getElementById('link').textContent;
+    let links = document.getElementById('link').textContent;
+    const base = document.getElementById('base').textContent;
+    if (links.startsWith('/') && window.location.hostname.includes('github.io')) {
+        //get base url
+        links = base + links;
+    }
     console.log(links);
     window.location.href = links;
 </script>

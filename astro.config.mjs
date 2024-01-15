@@ -2,12 +2,15 @@ import { defineConfig } from 'astro/config';
 
 import starlight from "@astrojs/starlight";
 import tailwind from "@astrojs/tailwind";
+
 // https://astro.build/config
 
 // https://astro.build/config
 export default defineConfig({
+  base:"/mllm/",
   integrations: [tailwind({}), starlight({
     title: 'mllm', 
+    components:{Head:'./src/components/Head.astro'},
     social: {
       github: 'https://github.com/UbiquitousLearning/mllm'
     },locales: {

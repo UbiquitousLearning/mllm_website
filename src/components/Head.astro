@@ -1,0 +1,8 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/Head.astro';
+const base = import.meta.env.BASE_URL;
+---
+<base href={base} />
+<Default {...Astro.props}><slot /></Default>
+
