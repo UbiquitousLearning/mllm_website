@@ -17,7 +17,7 @@ const base = import.meta.env.BASE_URL;
     //listen for changes of route
     window.addEventListener('load', () => {
         document.querySelectorAll('div.sl-markdown-content a').forEach((link) => {
-            let href = link.attributes.href.value
+            let href = link.attributes.href.value;
 
             console.log(href);
             if (href.startsWith("/")&&!href.startsWith(base)) {
@@ -27,6 +27,7 @@ const base = import.meta.env.BASE_URL;
                     link.attributes.href.value = base + href;
                 }
             }
+            href = link.attributes.href.value;
             // handle anchor links
             let anchors = href.split('#');
             if (anchors.length == 2) {
