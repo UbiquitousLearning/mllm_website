@@ -4,17 +4,34 @@ import Default from '@astrojs/starlight/components/Head.astro';
 const base = import.meta.env.BASE_URL;
 ---
 
-<meta name="base" content={base+'/'} >
-{base}/
-</meta>
+<meta name="base" content={base.endsWith('/')?base.substring(0,base.length-1):base} />
 <script>
-    const base = document.head.querySelector('meta[name="base"]').textContent;
+    const langArray = ['en','zh'];
+    const base = document.head.querySelector('meta[name="base"]').content;
+    let lang = window.location.pathname.split('/')[2];
+    if(langArray.indexOf(lang)===-1){
+        lang = null;
+    }
+    console.log(lang);
     console.log(base);
     //listen for changes of route
     window.addEventListener('load', () => {
-        document.querySelectorAll('.sl-markdown-content a').forEach((link) => {
-            if (link.href.startsWith("/")&&!link.href.startsWith(base)) {
-                link.href = base+"/"+link.href;
+        document.querySelectorAll('div.sl-markdown-content a').forEach((link) => {
+            let href = link.attributes.href.value
+
+            console.log(href);
+            if (href.startsWith("/")&&!href.startsWith(base)) {
+                if (lang&&!href.startsWith("/"+lang)) {
+                    link.attributes.href.value = base + "/" + lang + href;
+                } else {
+                    link.attributes.href.value = base + href;
+                }
+            }
+            // handle anchor links
+            let anchors = href.split('#');
+            if (anchors.length == 2) {
+                 anchors[1] = anchors[1].toLowerCase();
+                link.attributes.href.value = anchors.join('#');
             }
         });
     });
