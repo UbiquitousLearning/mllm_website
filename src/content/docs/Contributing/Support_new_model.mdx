@@ -118,9 +118,9 @@ NetTensor *Attention( NetTensor * x, int embedding_size, int hidden_size, int he
 }
 ... ...
 ```
-Note: The 'name' parameter in '_Op' is used to identify the operation in the model. It must be unique and should match the corresponding name in the original PyTorch/SafeTensor model that has not been converted. 
+Note: The "name" parameter in "_Op" is used to identify the operation in the model. It must be unique and should match the corresponding name in the original PyTorch/SafeTensor model that has not been converted. 
 
-For example, you can inspect the names of operations in a '.pth' model using the following code:
+For example, you can inspect the names of operations in a ".pth" model using the following code:
 ```python
 import torch
 model_path = "/path/to/model.pth"
@@ -142,7 +142,7 @@ layers.0.feed_forward.w1.weight  Shape: torch.Size([11008, 4096])
 ... ...
 ```
 The above code will print the part before ".weight" in the "key" values of all operations in the model. 
-This part should match the 'name' parameter in the MLLM code. For instance, if the key is `"layers.0.attention.wq.weight"`, the corresponding 'name' parameter in MLLM should be `"layers.0.attention.wq"`.
+This part should match the "name" parameter in the MLLM code. For instance, if the key is `"layers.0.attention.wq.weight"`, the corresponding "name" parameter in MLLM should be `"layers.0.attention.wq"`.
 
 
 ## Add PostProcessing
