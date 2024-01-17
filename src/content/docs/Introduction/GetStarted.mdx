@@ -22,6 +22,8 @@ git clone https://github.com/UbiquitousLearning/mllm
 ```
 2. Check prerequisites
 Although **mllm** is a standalone library, it requires some tools to build the project and some other libs to accelerating the inference.
+ - Python 3.8+
+ - gcc(11.4+) / clang (11.0+)
  - [CMake](https://cmake.org/download/)  >= 3.18
  - OpenMP Libs.
  - Android NDK Toolchains >= 26
@@ -68,7 +70,9 @@ Please note, when using the Android Demo App, you need to push the model files a
 git submodule update --init --recursive # clone the android demo app
 ```
 2. Now you can import the project into Android Studio and build it.
+3. If you do not use Android Studio, you may need to manually setup JDK(17+) and Android SDK(30+) environment, and then build it with gradle.
 
+```bash
 * Build JNI Libs (Optional)
 The mllm JNI Libs Binary is provided along with the Android Demo App. You can find it in the `android/app/src/main/cpp/libs` directory.
 But if you want to build it yourself, you can follow the steps below:

@@ -23,6 +23,8 @@ git clone https://github.com/UbiquitousLearning/mllm
 ```
 2. 检查先决条件
 虽然mllm是一个独立的库，但它需要一些工具来构建项目和一些其他库来加速推理。
+ - Python 3.8+
+ - gcc(11.4+) / clang (11.0+)
  - [CMake](https://cmake.org/) >= 3.18
  - OpenMP库
  - Android NDK工具链 >= 26
@@ -67,6 +69,8 @@ Android演示应用目前处于非常早期的阶段，并且它在一个单独�
 git submodule update --init --recursive # 克隆安卓演示应用
 ```
 2. 现在你可以将项目导入到Android Studio并构建它。
+
+3. 如果你不使用Android Studio,你可能需要手动设置JDK(17+)和Android SDK(30+)环境,然后使用gradle构建它。
 
 :::note[构建JNI库]
 mllm JNI库的二进制文件随Android演示应用一起提供。你可以在`android/app/src/main/cpp/libs`目录中找到它。
