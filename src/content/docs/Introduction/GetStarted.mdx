@@ -22,7 +22,6 @@ git clone https://github.com/UbiquitousLearning/mllm
 ```
 2. Check prerequisites
 Although **mllm** is a standalone library, it requires some tools to build the project and some other libs to accelerating the inference.
- - Python 3.8+
  - gcc(11.4+) / clang (11.0+)
  - [CMake](https://cmake.org/download/)  >= 3.18
  - OpenMP Libs.
@@ -54,7 +53,7 @@ The binary demo application should be located in the bin or bin-arm directory. I
 For the most commonly used LLAMA model, we provide a run script to use adb to quickly test the performance of mllm.
 Before running the script, you need to push the model files and Tokenizer to the /data/local/tmp/mllm/models directory on the device.
 ```bash
-cd scripts && ./llama_exe.sh
+cd scripts && ./run_llama.sh
 ```
 :::
 </Card>

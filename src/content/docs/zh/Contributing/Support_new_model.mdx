@@ -73,7 +73,7 @@ public:
 
 请参考[example](https://github.com/UbiquitousLearning/mllm/tree/develop/examples)和[Op列表文档]()，搭建模型结构。
 
-例如构建CLIP的模型：
+实例1： 构建CLIP的模型：
 ```cpp
 ... ...
 
@@ -91,6 +91,58 @@ void CLIP(Context* c) {
 }
 ... ...
 ```
+
+实例2： 构建Attention结构：
+```cpp
+... ...
+
+NetTensor *Attention( NetTensor * x, int embedding_size, int hidden_size, int head_size, string name){
+    auto *q =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wq");
+    auto *k =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wk");
+    auto *v =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wv");
+    q = q->view(-1, head_size, -1, hidden_size);
+    k = k->view(-1, head_size, -1, hidden_size);
+    v = v->view(-1, head_size, -1, hidden_size);
+    q = _RoPE( {q}, 2, name + ".q_rope");
+    k = _RoPE( {k}, 2, name + ".k_rope");
+    k = _KVCache( {k},  name + ".k_cache");
+    v = _KVCache( {v}, name + ".v_cache");
+    auto *qk = _Matmul( {q, k}, false, true, name + ".qk");
+    qk = *qk/std::sqrt(hidden_size);
+    qk = _Causalmask( {qk}, name + ".mask");
+    qk = _Softmax( {qk}, DIMENSION, name + ".softmax");
+    auto *o = _Matmul( {qk, v}, false, false, name + ".qkv");
+    o = o->view(-1, 1, -1, hidden_size * head_size);
+    o = _Linear( {o}, hidden_size * head_size, embedding_size, false, name + ".wo");
+    return o;
+}
+... ...
+```
+注意： _Op中的的name参数，用于在模型中标识Op，不可重复，且需与模式未转换的pytorch/safetensor模型的对应名称相同。
+
+例如，您可以通过如下方式查看pth模型中Op的名称：
+```python
+import torch
+model_path = "/path/to/model.pth"
+model = torch.load(model_path)
+for key in model:
+    print(f"{key}  Shape: {model[key].shape}")
+
+```
+输出如下：
+```
+tok_embeddings.weight  Shape: torch.Size([32000, 4096])
+norm.weight  Shape: torch.Size([4096])
+output.weight  Shape: torch.Size([32000, 4096])
+layers.0.attention.wq.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wk.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wv.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wo.weight  Shape: torch.Size([4096, 4096])
+layers.0.feed_forward.w1.weight  Shape: torch.Size([11008, 4096])
+... ...
+```
+上述代码将打印出模型中所有Op的“key”值中“.weight”前的部分需与mllm中的name参数相同。
+例如： `"layers.0.attention.wq.weight"`对应的mllm中的name参数应为`"layers.0.attention.wq"`。
 
 ## 添加PostProcessing
 在main_XXXModel.cpp中添加PostProcessing函数。

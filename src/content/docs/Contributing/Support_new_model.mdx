@@ -74,7 +74,7 @@ public:
 **Create a new file named `main_XXXModel.cpp` in the [example directory](https://github.com/UbiquitousLearning/mllm/tree/develop/examples) and build it in the [CMakeLists.txt](https://github.com/UbiquitousLearning/mllm/blob/develop/CMakeLists.txt).**
 
 Please refer to the [example](https://github.com/UbiquitousLearning/mllm/tree/develop/examples) and the [Op list documentation](), and construct the model structure.
-For instance, to build the CLIP model:
+Example 1: To build the CLIP model:
 ```cpp
 ... ...
 
@@ -92,6 +92,58 @@ void CLIP(Context* c) {
 }
 ... ...
 ```
+Example 2: Building the Attention Structure:
+```cpp
+... ...
+
+NetTensor *Attention( NetTensor * x, int embedding_size, int hidden_size, int head_size, string name){
+    auto *q =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wq");
+    auto *k =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wk");
+    auto *v =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wv");
+    q = q->view(-1, head_size, -1, hidden_size);
+    k = k->view(-1, head_size, -1, hidden_size);
+    v = v->view(-1, head_size, -1, hidden_size);
+    q = _RoPE( {q}, 2, name + ".q_rope");
+    k = _RoPE( {k}, 2, name + ".k_rope");
+    k = _KVCache( {k},  name + ".k_cache");
+    v = _KVCache( {v}, name + ".v_cache");
+    auto *qk = _Matmul( {q, k}, false, true, name + ".qk");
+    qk = *qk/std::sqrt(hidden_size);
+    qk = _Causalmask( {qk}, name + ".mask");
+    qk = _Softmax( {qk}, DIMENSION, name + ".softmax");
+    auto *o = _Matmul( {qk, v}, false, false, name + ".qkv");
+    o = o->view(-1, 1, -1, hidden_size * head_size);
+    o = _Linear( {o}, hidden_size * head_size, embedding_size, false, name + ".wo");
+    return o;
+}
+... ...
+```
+Note: The 'name' parameter in '_Op' is used to identify the operation in the model. It must be unique and should match the corresponding name in the original PyTorch/SafeTensor model that has not been converted. 
+
+For example, you can inspect the names of operations in a '.pth' model using the following code:
+```python
+import torch
+model_path = "/path/to/model.pth"
+model = torch.load(model_path)
+for key in model:
+    print(f"{key}  Shape: {model[key].shape}")
+
+```
+The output will be as follows:
+```
+tok_embeddings.weight  Shape: torch.Size([32000, 4096])
+norm.weight  Shape: torch.Size([4096])
+output.weight  Shape: torch.Size([32000, 4096])
+layers.0.attention.wq.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wk.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wv.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wo.weight  Shape: torch.Size([4096, 4096])
+layers.0.feed_forward.w1.weight  Shape: torch.Size([11008, 4096])
+... ...
+```
+The above code will print the part before ".weight" in the "key" values of all operations in the model. 
+This part should match the 'name' parameter in the MLLM code. For instance, if the key is `"layers.0.attention.wq.weight"`, the corresponding 'name' parameter in MLLM should be `"layers.0.attention.wq"`.
+
 
 ## Add PostProcessing
 Add the PostProcessing function in `main_XXXModel.cpp`.

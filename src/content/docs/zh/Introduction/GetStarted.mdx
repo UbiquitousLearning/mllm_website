@@ -23,7 +23,6 @@ git clone https://github.com/UbiquitousLearning/mllm
 ```
 2. 检查先决条件
 虽然mllm是一个独立的库，但它需要一些工具来构建项目和一些其他库来加速推理。
- - Python 3.8+
  - gcc(11.4+) / clang (11.0+)
  - [CMake](https://cmake.org/) >= 3.18
  - OpenMP库
@@ -55,7 +54,7 @@ cd scripts && ./build_android.sh
 针对最常用的LLAMA模型,我们给出一个运行脚本来使用adb来快速测试mllm的性能。
 在运行脚本前,你需要将模型文件和Tokenizer推送到设备 /data/local/tmp/mllm/models 目录下。
 ```bash
-cd scripts && ./llama_exe.sh
+cd scripts && ./run_llama.sh
 ```
 :::
 </Card>
