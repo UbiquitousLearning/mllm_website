@@ -1,0 +1,18 @@
+---
+title: 转换词表
+sidebar:
+  order: 2
+---
+
+在转换词表前，您需要安装 Python（3.8+），并安装所需的软件包。
+
+```bash
+cd tools/convertor
+pip install -r ./requirements.txt
+```
+
+您可以按照以下步骤将词汇表转换为 mllm 词汇表。我们目前支持两种类型的分词器：Unigram 和 BPE。
+
+```bash
+python vocab.py --input_file=tokenizer.model --output_file=vocab.mllm --type=Unigram
+```

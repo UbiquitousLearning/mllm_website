@@ -1,0 +1,19 @@
+---
+title: Convert Vocabulary
+sidebar:
+  order: 2
+---
+
+
+To start the conversion process, you need to have Python (3.8+) installed and install the required packages.
+
+```bash
+cd tools/convertor
+pip install -r ./requirements.txt
+```
+
+To convert the vocabulary to mllm vocabulary, follow these steps. We currently support two types of tokenizers: Unigram and BPE.
+
+```bash
+python vocab.py --input_file=tokenizer.model --output_file=vocab.mllm --type=Unigram
+```

@@ -213,6 +213,27 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"Customization/Convert_model.mdx": {
+	id: "Customization/Convert_model.mdx";
+  slug: "customization/convert_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"Customization/Convert_vocabulary.mdx": {
+	id: "Customization/Convert_vocabulary.mdx";
+  slug: "customization/convert_vocabulary";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"Customization/Quantize_model.mdx": {
+	id: "Customization/Quantize_model.mdx";
+  slug: "customization/quantize_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "Introduction/GetStarted.mdx": {
 	id: "Introduction/GetStarted.mdx";
   slug: "introduction/getstarted";
@@ -251,6 +272,27 @@ declare module 'astro:content' {
 "zh/Contributing/Support_new_model.mdx": {
 	id: "zh/Contributing/Support_new_model.mdx";
   slug: "zh/contributing/support_new_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Customization/Convert_model.mdx": {
+	id: "zh/Customization/Convert_model.mdx";
+  slug: "zh/customization/convert_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Customization/Convert_vocabulary.mdx": {
+	id: "zh/Customization/Convert_vocabulary.mdx";
+  slug: "zh/customization/convert_vocabulary";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Customization/Quantize_model.mdx": {
+	id: "zh/Customization/Quantize_model.mdx";
+  slug: "zh/customization/quantize_model";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

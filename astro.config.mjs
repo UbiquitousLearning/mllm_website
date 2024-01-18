@@ -33,6 +33,9 @@ export default defineConfig({
         label: 'Introduction',
         autogenerate:{directory:'Introduction'}
       },{
+        label: 'Customization',
+        autogenerate:{directory:'Customization'}
+      },{
         label: 'Contributing',
         autogenerate:{directory:'Contributing'}
       },{

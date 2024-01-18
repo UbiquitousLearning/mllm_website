@@ -8,14 +8,14 @@ sidebar:
 import {LinkCard} from '@astrojs/starlight/components';
 import Card from "/src/components/Card.astro"
 
-**mllm** 是一个开源项目，你可以在你的项目中自由使用它。你可以在[GitHub](https://github.com/UbiquitousLearning/mllm)上找到源代码。
-该项目也是公开开发和维护的，查看贡献指南看看你如何可以帮助。
+**mllm** 是一个开源项目，您可以在您的项目中自由使用它。您可以在[GitHub](https://github.com/UbiquitousLearning/mllm)上找到源代码。
+该项目也是公开开发和维护的，查看贡献指南看看您如何可以帮助。
 <LinkCard
   title="贡献指南"
   description="了解如何为mllm做出贡献。"
   href="/contributing/contributing"
 />
-## 在你开始之前
+## 在您开始之前
 
 1. 克隆仓库
 ```bash
@@ -36,9 +36,9 @@ git clone https://github.com/UbiquitousLearning/mllm
 
 mllm提供两种形式的用户界面：<ins>命令行界面Demo</ins>和<ins>Android Demo应用</ins>。
 <Card title="为CLI演示构建" icon="laptop">
-CLI应用默认开启编译,你可以在bin或bin-arm目录中找到可执行文件。
+CLI应用默认开启编译,您可以在bin或bin-arm目录中找到可执行文件。
 :::tip
-注意,在执行二进制文件之前,你需要将模型文件和Tokenizer 放置在当前目录下的models目录中。
+注意,在执行二进制文件之前,您需要将模型文件和Tokenizer 放置在当前目录下的models目录中。
 :::
 * 为本机操作系统HostOS构建：
 ```bash
@@ -49,10 +49,10 @@ cd scripts && ./build.sh
 export ANDROID_NDK=/path/to/your/ndk
 cd scripts && ./build_android.sh
 ```
-二进制Demo应用应该位于bin或bin-arm目录中,如果需要在Android平台上测试命令行Demo,你可以使用`adb push`命令将二进制文件推送到设备上,并通过`adb shell`命令运行它。
+二进制Demo应用应该位于bin或bin-arm目录中,如果需要在Android平台上测试命令行Demo,您可以使用`adb push`命令将二进制文件推送到设备上,并通过`adb shell`命令运行它。
 :::tip
 针对最常用的LLAMA模型,我们给出一个运行脚本来使用adb来快速测试mllm的性能。
-在运行脚本前,你需要将模型文件和Tokenizer推送到设备 /data/local/tmp/mllm/models 目录下。
+在运行脚本前,您需要将模型文件和Tokenizer推送到设备 /data/local/tmp/mllm/models 目录下。
 ```bash
 cd scripts && ./run_llama.sh
 ```
@@ -61,19 +61,19 @@ cd scripts && ./run_llama.sh
 <Card title="为Android演示应用构建" icon="puzzle">
 Android演示应用目前处于非常早期的阶段，并且它在一个单独的仓库中进行维护,并通过 `android` 这个子模块来引入.
 :::tip
-注意,当你使用Android Demo App时,你需要在启动App前将模型文件和Tokenizer推送到设备 /sdcard/Download/model 目录下。
+注意,当您使用Android Demo App时,您需要在启动App前将模型文件和Tokenizer推送到设备 /sdcard/Download/model 目录下。
 :::
 1. 拉取子模块
 ```bash
 git submodule update --init --recursive # 克隆安卓演示应用
 ```
-2. 现在你可以将项目导入到Android Studio并构建它。
+2. 现在您可以将项目导入到Android Studio并构建它。
 
-3. 如果你不使用Android Studio,你可能需要手动设置JDK(17+)和Android SDK(30+)环境,然后使用gradle构建它。
+3. 如果您不使用Android Studio,您可能需要手动设置JDK(17+)和Android SDK(30+)环境,然后使用gradle构建它。
 
 :::note[构建JNI库]
-mllm JNI库的二进制文件随Android演示应用一起提供。你可以在`android/app/src/main/cpp/libs`目录中找到它。
-但是，如果你想自己构建它，可以按照以下步骤操作：
+mllm JNI库的二进制文件随Android演示应用一起提供。您可以在`android/app/src/main/cpp/libs`目录中找到它。
+但是，如果您想自己构建它，可以按照以下步骤操作：
 ```bash
 export ANDROID_NDK=/path/to/your/ndk
 cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DAPK=ON -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .

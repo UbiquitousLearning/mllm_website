@@ -1,0 +1,47 @@
+---
+title: 转换模型
+sidebar:
+  order: 1
+---
+
+
+您可以从[这里](https://huggingface.co/mllmTeam)下载模型，或者您也可以自行将 PyTorch/SafeTensor 模型转换为 mllm 模型。
+
+在转换模型前，您需要安装 Python（3.8+），并安装所需的软件包。
+
+```bash
+cd tools/convertor
+pip install -r ./requirements.txt
+```
+
+## 转换单文件 PyTorch 模型
+
+您可以按照下面的说明转换单个文件的 PyTorch 模型。
+
+```bash
+python convert.py --input_model=model.pth --output_model=model.mllm --type=torch
+``` 
+
+## 转换多文件 PyTorch 模型
+
+您可以按照下面的说明转换多文件的 PyTorch 模型。
+
+```bash
+python convert.py --input_model=pytorch_model.bin.index.json --output_model=model.mllm --type=torch
+``` 
+
+## 转换单文件 SafeTensor 模型
+
+您可以按照下面的说明转换单个文件的 SafeTensor 模型。
+
+```bash
+python convert.py --input_model=model.safetensors --output_model=model.mllm --type=safetensor
+``` 
+
+## 转换多文件 SafeTensor 模型 
+
+您可以从[Hugging Face](https://huggingface.co/)下载模型，并按照下面的说明转换多文件的 SafeTensor 模型。
+
+```bash
+python convert.py --input_model=model.safetensors.index.json --output_model=model.mllm --type=safetensor
+```  

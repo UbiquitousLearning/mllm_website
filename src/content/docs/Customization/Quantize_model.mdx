@@ -1,0 +1,15 @@
+---
+title: Quantize model
+sidebar:
+  order: 3
+---
+
+You can quantize the mllm model to an int4 model on your own.
+
+Before quantizing the mllm model, please follow the [model conversion](/customization/convert_model) tutorial to obtain your mllm float model, or download it from [here](https://huggingface.co/mllmTeam). We only support two quantization modes: Q4_0 and Q4_K.
+
+
+```bash
+cd bin
+./quantize model.mllm model_q4_0.mllm Q4_K
+```

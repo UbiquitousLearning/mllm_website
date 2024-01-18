@@ -1,0 +1,17 @@
+---
+title: 量化模型
+sidebar:
+  order: 3
+---
+
+您可以自行将 mllm 模型量化为 int4 模型。
+
+在对 mllm 模型进行量化之前，请按照[模型转换](/zh/customization/convert_model) 教程获取你的 mllm 浮点模型，或者从[这里](https://huggingface.co/mllmTeam)下载。我们只支持两种量化模式：Q4_0 和 Q4_K。
+
+如果有任何进一步的问题或需要帮助，请随时告诉我。
+
+
+```bash
+cd bin
+./quantize model.mllm model_q4_0.mllm Q4_K
+```
