@@ -61,6 +61,19 @@ aside.starlight-aside{
     visibility: hidden;
     margin-right: 0.2rem;
 }
+.task-list-item input[type="checkbox"]:has(+ strong){
+    visibility: hidden;
+    margin-right: 0.2rem;
+
+}
+.task-list-item input[type="checkbox"]:has(+ strong):before{
+    content: "🚧";
+    visibility: visible;
+    /* margin: -5px; */
+    top: -0.5rem;
+    position: relative;
+}
+
 li.task-list-item {
     list-style: none!important;
 }
