@@ -51,7 +51,15 @@ cd scripts && ./build_android.sh
 The binary demo application should be located in the bin or bin-arm directory. If you need to test the command line demo on the Android platform, you can use the `adb push` command to push the binary file to the device, and run it with the `adb shell` command.
 :::tip
 For the most commonly used LLAMA model, we provide a run script to use adb to quickly test the performance of mllm.
-Before running the script, you need to push the model files and Tokenizer to the /data/local/tmp/mllm/models directory on the device.
+Before running the script, you need to push the model files and Tokenizer vocab to the /data/local/tmp/mllm/models directory on the device.
+Be sure to organize the files in the following file names:
+| File        | FileName       |
+|-------------|----------------|
+| Fuyu Model  | fuyu.mllm      |
+| Fuyu Vocab  | vocab_uni.mllm |
+| LLaMA Model | llama_2.mllm   |
+| LLaMA Vocab | vocab.mllm     |
+
 ```bash
 cd scripts && ./run_llama.sh
 ```
