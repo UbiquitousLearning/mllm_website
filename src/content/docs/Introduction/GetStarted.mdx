@@ -21,7 +21,7 @@ The project is also developed and maintained publicly. Check out the Contributin
 git clone https://github.com/UbiquitousLearning/mllm
 ```
 2. Check prerequisites
-Although **mllm** is a standalone library, it requires some tools to build the project and some other libs to accelerating the inference.
+Although **mllm** is a standalone library, it requires some tools to build the project and some other libs to accelerate the inference.
  - gcc(11.4+) / clang (11.0+)
  - [CMake](https://cmake.org/download/)  >= 3.18
  - OpenMP Libs.
@@ -30,14 +30,14 @@ Although **mllm** is a standalone library, it requires some tools to build the p
 ## Build the project
 
 :::note[Build Target]
-Currently, mllm can run on Android, Linux and macOS with architectures of x86_64, arm64.
+Currently, mllm can run on Android, Linux, and macOS with architectures of x86_64, and arm64.
 :::
 
-mllm Offers two forms of user interface: <ins> Command Line Interface Demo </ins> and <ins> a Android Demo App </ins>.
+mllm offers two forms of user interface: <ins> Command Line Interface Demo </ins> and <ins> an Android Demo App </ins>.
 <Card title="Build For CLI Demo" icon="laptop">
 ClI Apps are built by default. You can find the executable file in the `bin` or `bin-arm` directory.
 :::tip
-Please note, before executing the binary file, you need to place the model files and Tokenizer in the models directory under the current directory.
+Please note, that before executing the binary file, you need to place the model files and Tokenizer in the models directory under the current directory.
 :::
 * To Build for Host OS:
 ```bash
@@ -77,7 +77,7 @@ Please note, when using the Android Demo App, you need to push the model files a
 git submodule update --init --recursive # clone the android demo app
 ```
 2. Now you can import the project into Android Studio and build it.
-3. If you do not use Android Studio, you may need to manually setup JDK(17+) and Android SDK(30+) environment, and then build it with gradle.
+3. If you do not use Android Studio, you may need to manually set up JDK(17+) and Android SDK(30+) environment, and then build it with gradle.
 
 * Build JNI Libs (Optional)
 The mllm JNI Libs Binary is provided along with the Android Demo App. You can find it in the `android/app/src/main/cpp/libs` directory.
@@ -87,7 +87,7 @@ export ANDROID_NDK=/path/to/your/ndk
 cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DAPK=ON -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
 cmake --build ./build_arm/ --target all -- -j$(nproc)
 ```
-The `libmllm_lib.a` should locate in the `build_arm` directory.
+The `libmllm_lib.a` should be located in the `build_arm` directory.
 
 For Your Convenience, we also provide a script to build the whole App:
 ```bash
