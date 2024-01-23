@@ -18,10 +18,10 @@ The steps for adding an operation include:
 ## Add a New Tokenizer
 
 :::tip
-You need to consult the [tokenizer directory](https://github.com/UbiquitousLearning/mllm/tree/develop/src/tokenizers) to check if the tokenizer required for the model you wish to add is already supported. If it is supported, please proceed to the next section.
+You need to consult the [tokenizer directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers) to check if the tokenizer required for the model you wish to add is already supported. If it is supported, please proceed to the next section.
 :::
 
-1. Add XXX/XXXTokenizer.hpp and XXX/XXXTokenizer.cpp in the [tokenizer directory](https://github.com/UbiquitousLearning/mllm/tree/develop/src/tokenizers).
+1. Add XXX/XXXTokenizer.hpp and XXX/XXXTokenizer.cpp in the [tokenizer directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers).
 2. Class declaration. Inherit from the base class Tokenizer, mainly implement the tokenize() function.
 
 Example as follows:
@@ -44,9 +44,9 @@ public:
 
 ## Add a New PreProcessor
 :::tip
-You need to consult the [processor directory](https://github.com/UbiquitousLearning/mllm/tree/develop/src/processor) to check if the PreProcessor required for your model is already supported. If it is, please proceed to the next section. Try not to implement a new PreProcessor.
+You need to consult the [processor directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor) to check if the PreProcessor required for your model is already supported. If it is, please proceed to the next section. Try not to implement a new PreProcessor.
 :::
-1. Add XXXPreProcess.hpp and XXXPreProcess.cpp in the [processor directory](https://github.com/UbiquitousLearning/mllm/tree/develop/src/processor).
+1. Add XXXPreProcess.hpp and XXXPreProcess.cpp in the [processor directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor).
 2. Class declaration. Inherit from the base class PreProcessor, mainly overwrite the Process() function.
 
 Example as follows:
@@ -71,9 +71,9 @@ public:
 
 ## Build Model Structure
 
-**Create a new file named `main_XXXModel.cpp` in the [example directory](https://github.com/UbiquitousLearning/mllm/tree/develop/examples) and build it in the [CMakeLists.txt](https://github.com/UbiquitousLearning/mllm/blob/develop/CMakeLists.txt).**
+**Create a new file named `main_XXXModel.cpp` in the [example directory](https://github.com/UbiquitousLearning/mllm/tree/main/examples) and build it in the [CMakeLists.txt](https://github.com/UbiquitousLearning/mllm/blob/main/CMakeLists.txt).**
 
-Please refer to the [example](https://github.com/UbiquitousLearning/mllm/tree/develop/examples) and the [Op list documentation](), and construct the model structure.
+Please refer to the [example](https://github.com/UbiquitousLearning/mllm/tree/main/examples) and the [Op list documentation](), and construct the model structure.
 Example 1: To build the CLIP model:
 ```cpp
 ... ...

@@ -18,7 +18,7 @@ sidebar:
 
 ##  添加对应的Backend的Op实现
 ### CPU
-1. 在[CPU目录](https://github.com/UbiquitousLearning/mllm/tree/develop/src/backends/cpu)下添加CPUAbc.hpp、CPUAbc.cpp，也可以运行[new_op.py](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/new_op.py)生成两文件。
+1. 在[CPU目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/backends/cpu)下添加CPUAbc.hpp、CPUAbc.cpp，也可以运行[new_op.py](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/new_op.py)生成两文件。
 2. 类声明。 继承基类Op，主要实现reshape()和execute()等。
 3. 实现CPUOpCreator。
 
@@ -73,7 +73,7 @@ public:
 
 ##  添加Op的类型枚举
 
-在[OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/include/OpDefined.hpp)文件中添加Op的类型枚举。
+在[OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/include/OpDefined.hpp)文件中添加Op的类型枚举。
 ```cpp
 #ifndef MLLM_OPDEFINED_H
 #define MLLM_OPDEFINED_H
@@ -108,8 +108,8 @@ static const vector<string> OpNames = {
 
 ##  在对应的Backend注册实现的Op
 
-1. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L34)文件中引用CPUAbc.hpp
-2. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L86)文件中添加addCreator
+1. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L34)文件中引用CPUAbc.hpp
+2. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L86)文件中添加addCreator
 ```cpp
 #include "CPUBackend.hpp"
 #include "CPUView.hpp"
@@ -128,11 +128,11 @@ void CPUBackend::registerOps() {
 
 
 ## 添加Op的前端表示
-在[express](https://github.com/UbiquitousLearning/mllm/tree/develop/src/express)目录下实现Op的前端表示，您可以选择实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71)的方法或者实现为一个[函数](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21)
+在[express](https://github.com/UbiquitousLearning/mllm/tree/main/src/express)目录下实现Op的前端表示，您可以选择实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71)的方法或者实现为一个[函数](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21)
 
-### Ⅰ. 实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71)的方法。 
+### Ⅰ. 实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71)的方法。 
 
-1. 在[ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp)中添加声明
+1. 在[ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp)中添加声明
 ```cpp
 
 typedef struct TNetTensor {
@@ -151,7 +151,7 @@ typedef struct TNetTensor {
 } NetTensor;
 
 ```
-2. 在[ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.cpp)中实现函数
+2. 在[ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.cpp)中实现函数
 ```cpp
 
 NetTensor *TNetTensor::abc*(int param1, bool param2) {
@@ -170,13 +170,13 @@ NetTensor *TNetTensor::abc*(int param1, bool param2) {
 
 ```
 
-### Ⅱ. 实现为[函数](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21)。
+### Ⅱ. 实现为[函数](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21)。
 
-1. 在[Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp)中添加声明
+1. 在[Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp)中添加声明
 ```cpp
 NetTensor *_Abc(std::vector<NetTensor *> inputs, int param1, bool param2, string name = "");
 ```
-2. 在[Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.cpp)中实现函数
+2. 在[Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.cpp)中实现函数
 ```cpp
 
 NetTensor *_Abc(std::vector<NetTensor *> inputs,  int param1, bool param2, string name) {

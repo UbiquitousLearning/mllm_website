@@ -19,7 +19,7 @@ The steps to add an Op are as follows:
 
 ## Add the implementation of the Op for the corresponding Backend
 ### CPU
-1. Add CPUAbc.hpp and CPUAbc.cpp to the [CPU directory](https://github.com/UbiquitousLearning/mllm/tree/develop/src/backends/cpu), or you can generate the two files by running [new_op.py](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/new_op.py).
+1. Add CPUAbc.hpp and CPUAbc.cpp to the [CPU directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/backends/cpu), or you can generate the two files by running [new_op.py](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/new_op.py).
 2. Class declaration. Inherit from the base class Op and mainly implement methods like reshape() and execute().
 3. Implement CPUOpCreator.
 
@@ -74,7 +74,7 @@ public:
 
 ## Add the enumeration of the Op types
 
-Add the enumeration of the Op types in the [OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/include/OpDefined.hpp) file.
+Add the enumeration of the Op types in the [OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/include/OpDefined.hpp) file.
 ```cpp
 #ifndef MLLM_OPDEFINED_H
 #define MLLM_OPDEFINED_H
@@ -109,8 +109,8 @@ static const vector<string> OpNames = {
 
 ## Register the implemented Op for the corresponding Backend
 
-1. Include CPUAbc.hpp in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L34) file.
-2. Add the addCreator function in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/backends/cpu/CPUBackend.cpp#L86) file.
+1. Include CPUAbc.hpp in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L34) file.
+2. Add the addCreator function in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L86) file.
 ```cpp
 #include "CPUBackend.hpp"
 #include "CPUView.hpp"
@@ -129,11 +129,11 @@ void CPUBackend::registerOps() {
 
 
 ## Add the frontend representation of the Op
-Implement the frontend representation of the Op in the [express](https://github.com/UbiquitousLearning/mllm/tree/develop/src/express) directory. You can choose to implement it as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71) or as a [function](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21).
+Implement the frontend representation of the Op in the [express](https://github.com/UbiquitousLearning/mllm/tree/main/src/express) directory. You can choose to implement it as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71) or as a [function](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21).
 
-### Ⅰ. Implement as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp#L71).
+### Ⅰ. Implement as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71).
 
-1. Add the declaration in [ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.hpp)
+1. Add the declaration in [ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp)
 ```cpp
 
 typedef struct TNetTensor {
@@ -152,7 +152,7 @@ typedef struct TNetTensor {
 } NetTensor;
 
 ```
-2. Implement the function in [ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/ExpressBase.cpp)
+2. Implement the function in [ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.cpp)
 ```cpp
 NetTensor *TNetTensor::abc(int param1, bool param2) {
     Context *ctx = this->ctx;
@@ -170,13 +170,13 @@ NetTensor *TNetTensor::abc(int param1, bool param2) {
 
 ```
 
-### Ⅱ. Implementation as a [function](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp#L21).
+### Ⅱ. Implementation as a [function](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21).
 
-1. Add declaration in [Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.hpp)
+1. Add declaration in [Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp)
 ```cpp
 NetTensor *_Abc(std::vector<NetTensor *> inputs, int param1, bool param2, string name = "");
 ```
-2. Implement the function in [Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/develop/src/express/Express.cpp)
+2. Implement the function in [Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.cpp)
 ```cpp
 
 NetTensor *_Abc(std::vector<NetTensor *> inputs,  int param1, bool param2, string name) {

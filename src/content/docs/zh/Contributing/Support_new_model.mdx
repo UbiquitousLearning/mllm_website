@@ -17,9 +17,9 @@ sidebar:
 
 ##  增加新的Tokenizer
 
-需要查阅[tokenizer目录](https://github.com/UbiquitousLearning/mllm/tree/develop/src/tokenizers), 检查您想要添加的模型需要的tokenizer是否已经支持，如果已经支持，请跳转至下一章节。
+需要查阅[tokenizer目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers), 检查您想要添加的模型需要的tokenizer是否已经支持，如果已经支持，请跳转至下一章节。
 
-1. 在[tokenizer目录](https://github.com/UbiquitousLearning/mllm/tree/develop/src/tokenizers)下添加XXX/XXXTokenizer.hpp、XXX/XXXTokenizer.cpp。
+1. 在[tokenizer目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers)下添加XXX/XXXTokenizer.hpp、XXX/XXXTokenizer.cpp。
 2. 类声明。 继承基类Tokenizer，主要实现tokenize()函数。
 
 示例如下：
@@ -42,9 +42,9 @@ public:
 
 ##  增加新的PreProcessor
 
-需要查阅[processor目录](https://github.com/UbiquitousLearning/mllm/tree/develop/src/processor), 检查您想要添加的模型需要的PreProcessor需要的功能是否已经支持，如果已经支持，请跳转至下一章节。尽量不要实现新的PreProcessor。
+需要查阅[processor目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor), 检查您想要添加的模型需要的PreProcessor需要的功能是否已经支持，如果已经支持，请跳转至下一章节。尽量不要实现新的PreProcessor。
 
-1. 在[processor目录](https://github.com/UbiquitousLearning/mllm/tree/develop/src/processor)下添加XXXPreProcess.hpp、XXXPreProcess.cpp。
+1. 在[processor目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor)下添加XXXPreProcess.hpp、XXXPreProcess.cpp。
 2. 类声明。 继承基类PreProcessor，主要重写Process()函数。
 
 示例如下：
@@ -69,9 +69,9 @@ public:
 
 ## 搭建模型结构
 
-**在[example目录](https://github.com/UbiquitousLearning/mllm/tree/develop/examples)下新建main_XXXModel.cpp文件，并在[CMakeList.txt](https://github.com/UbiquitousLearning/mllm/blob/develop/CMakeLists.txt)中构建之。**
+**在[example目录](https://github.com/UbiquitousLearning/mllm/tree/main/examples)下新建main_XXXModel.cpp文件，并在[CMakeList.txt](https://github.com/UbiquitousLearning/mllm/blob/main/CMakeLists.txt)中构建之。**
 
-请参考[example](https://github.com/UbiquitousLearning/mllm/tree/develop/examples)和[Op列表文档]()，搭建模型结构。
+请参考[example](https://github.com/UbiquitousLearning/mllm/tree/main/examples)和[Op列表文档]()，搭建模型结构。
 
 实例1： 构建CLIP的模型：
 ```cpp
