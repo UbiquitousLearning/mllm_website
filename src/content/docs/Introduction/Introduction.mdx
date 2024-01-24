@@ -6,11 +6,13 @@ sidebar:
     order: 1
 ---
 
-**mllm** is a fast multimodal LLM inference engine for mobile and edge devices, mainly supporting CPU inference on Android devices, and also supporting accelerating inference through GPU and NPU methods. 
+mllm is a fast and lightweight multimodal LLM inference engine for mobile and edge devices.
 
-Currently, mllm supports the inference of large models like <ins>llama</ins>, <ins>fuyu</ins>, <ins>vit</ins>, <ins>imagebind</ins>, <ins>clip</ins>, etc.
+* Plain C/C++ implementation without dependencies
+* Optimized for multimodal LLMs like fuyu-8B
+* Supported: ARM NEON and x86 AVX2
+* 4-bit and 6-bit integer quantization
 
-## Key Features
 
 
 ## Give it a try
@@ -20,9 +22,9 @@ In addition, mllm also offers [an example app](https://github.com/UbiquitousLear
 
 <table>
     <tr>
-        <td>Demo1</td>
-        <td>Demo2</td>
-        <td>Demo3</td>
+        <td>demo of UI screen understanding</td>
+        <td>demo of image understanding</td>
+        <td>demo of LLM chatting</td>
     </tr>
     <tr>
         <td> <video loop controls="controls" muted auto-play src="/demo1.mp4"/> </td>
