@@ -20,7 +20,7 @@ const base = import.meta.env.BASE_URL;
             let href = link.attributes.href.value;
 
             console.log(href);
-            if (href.startsWith("/")&&!href.startsWith(base)) {
+            if (href.startsWith("/")&&!href.startsWith(base+'/')) {
                 if (lang&&!href.startsWith("/"+lang)) {
                     link.attributes.href.value = base + "/" + lang + href;
                 } else {
@@ -35,7 +35,23 @@ const base = import.meta.env.BASE_URL;
                 link.attributes.href.value = anchors.join('#');
             }
         });
+        
     });
+        window.addEventListener('load', () => {
+                    document.querySelectorAll('div.sl-markdown-content video , div.sl-markdown-content img').forEach((link) => {
+            let href = link.attributes.src.value;
+
+            console.log(href);
+            if (href.startsWith("/")&&!href.startsWith(base+'/')) {
+                // if (lang&&!href.startsWith("/"+lang)) {
+                //     link.attributes.src.value = base +  href;
+                // } else {
+                    link.attributes.src.value = base + href;
+                // }
+            }
+           
+        });
+        })
 
 </script>
 <Default {...Astro.props}><slot /></Default>

@@ -52,13 +52,7 @@ cd scripts && ./build_android.sh
 二进制Demo应用应该位于bin或bin-arm目录中,如果需要在Android平台上测试命令行Demo,您可以使用`adb push`命令将二进制文件推送到设备上,并通过`adb shell`命令运行它。
 :::tip
 针对最常用的LLAMA模型,我们给出一个运行脚本来使用adb来快速测试mllm的性能。
-在运行脚本前,您需要将模型文件和Tokenizer推送到设备 /data/local/tmp/mllm/models 目录下,并按照下面的表格重命名.
-| File        | FileName       |
-|-------------|----------------|
-| Fuyu Model  | fuyu.mllm      |
-| Fuyu Vocab  | vocab_uni.mllm |
-| LLaMA Model | llama_2.mllm   |
-| LLaMA Vocab | vocab.mllm     |
+在运行脚本前,您需要将模型文件和Tokenizer推送到设备 /data/local/tmp/mllm/models 目录下.
 ```bash
 cd scripts && ./run_llama.sh
 ```
@@ -67,7 +61,13 @@ cd scripts && ./run_llama.sh
 <Card title="为Android演示应用构建" icon="puzzle">
 Android演示应用目前处于非常早期的阶段，并且它在一个单独的仓库中进行维护,并通过 `android` 这个子模块来引入.
 :::tip
-注意,当您使用Android Demo App时,您需要在启动App前将模型文件和Tokenizer推送到设备 /sdcard/Download/model 目录下。
+注意,当您使用Android Demo App时,您需要在启动App前将模型文件和Tokenizer推送到设备 /sdcard/Download/model 目录下,并按照以下表格重命名.
+| File        | FileName       |
+|-------------|----------------|
+| Fuyu Model  | fuyu.mllm      |
+| Fuyu Vocab  | vocab_uni.mllm |
+| LLaMA Model | llama_2.mllm   |
+| LLaMA Vocab | vocab.mllm     |
 :::
 1. 拉取子模块
 ```bash

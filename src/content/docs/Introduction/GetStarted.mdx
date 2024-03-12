@@ -35,7 +35,7 @@ Currently, mllm can run on Android, Linux, and macOS with architectures of x86_6
 
 mllm offers two forms of user interface: <ins> Command Line Interface Demo </ins> and <ins> an Android Demo App </ins>.
 <Card title="Build For CLI Demo" icon="laptop">
-ClI Apps are built by default. You can find the executable file in the `bin` or `bin-arm` directory.
+CLI Apps are built by default. You can find the executable file in the `bin` or `bin-arm` directory.
 :::tip
 Please note, that before executing the binary file, you need to place the model files and Tokenizer in the models directory under the current directory.
 :::
@@ -52,13 +52,7 @@ The binary demo application should be located in the bin or bin-arm directory. I
 :::tip
 For the most commonly used LLAMA model, we provide a run script to use adb to quickly test the performance of mllm.
 Before running the script, you need to push the model files and Tokenizer vocab to the /data/local/tmp/mllm/models directory on the device.
-Be sure to organize the files in the following file names:
-| File        | FileName       |
-|-------------|----------------|
-| Fuyu Model  | fuyu.mllm      |
-| Fuyu Vocab  | vocab_uni.mllm |
-| LLaMA Model | llama_2.mllm   |
-| LLaMA Vocab | vocab.mllm     |
+
 
 ```bash
 cd scripts && ./run_llama.sh
@@ -70,6 +64,14 @@ Android Demo App is currently in a very early stage, and it is maintained in a s
 
 :::tip
 Please note, when using the Android Demo App, you need to push the model files and Tokenizer to the /sdcard/Download/model directory on the device before launching the App.
+
+Be sure to organize the files in the following file names:
+| File        | FileName       |
+|-------------|----------------|
+| Fuyu Model  | fuyu.mllm      |
+| Fuyu Vocab  | vocab_uni.mllm |
+| LLaMA Model | llama_2.mllm   |
+| LLaMA Vocab | vocab.mllm     |
 :::
 
 1. Fetch the sub-module
