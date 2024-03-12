@@ -220,6 +220,13 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".mdx"] };
+"Contributing/Support_new_model_old.mdx": {
+	id: "Contributing/Support_new_model_old.mdx";
+  slug: "contributing/support_new_model_old";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
 "Customization/Convert_model.mdx": {
 	id: "Customization/Convert_model.mdx";
   slug: "customization/convert_model";
@@ -279,6 +286,13 @@ declare module 'astro:content' {
 "zh/Contributing/Support_new_model.mdx": {
 	id: "zh/Contributing/Support_new_model.mdx";
   slug: "zh/contributing/support_new_model";
+  body: string;
+  collection: "docs";
+  data: InferEntrySchema<"docs">
+} & { render(): Render[".mdx"] };
+"zh/Contributing/Support_new_model_old.mdx": {
+	id: "zh/Contributing/Support_new_model_old.mdx";
+  slug: "zh/contributing/support_new_model_old";
   body: string;
   collection: "docs";
   data: InferEntrySchema<"docs">

@@ -1,0 +1,226 @@
+---
+title: Model Development Guide (Old)
+sidebar:
+  order: 4
+---
+
+
+:::tip
+Before adding new models, please refer to the [Model List Document](/roadmap/roadmap/#more-models) to avoid unnecessary duplication.
+:::
+The steps for adding an operation include:
+1. (Optional) [Add a New Tokenizer](#Add-a-New-Tokenizer)
+2. (Optional) [Add a New PreProcessor](#Add-a-New-PreProcessor)
+3. [Build Model Structure](#Build-Model-Structure)
+4. [Add PostProcessing](#Add-PostProcessing)
+5. [Construct the Processing Flow](#Construct-the-Processing-Flow)
+
+## Add a New Tokenizer
+
+:::tip
+You need to consult the [tokenizer directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers) to check if the tokenizer required for the model you wish to add is already supported. If it is supported, please proceed to the next section.
+:::
+
+1. Add XXX/XXXTokenizer.hpp and XXX/XXXTokenizer.cpp in the [tokenizer directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers).
+2. Class declaration. Inherit from the base class Tokenizer, mainly implement the tokenize() function.
+
+Example as follows:
+```cpp
+#ifndef MLLM_XXX_HPP
+#define MLLM_XXX_HPP
+#include "tokenizers/Tokenizer.hpp"
+namespace mllm {
+class XXXTokenizer final : public Tokenizer {
+    ... ...,
+
+public:
+    vector<std::string> XXX(const std::string &token);
+    void tokenize(const std::string &text, std::vector<token_id_t> &tokens, bool bos) override;
+};
+} // namespace mllm
+
+#endif // MLLM_XXX_HPP
+```
+
+## Add a New PreProcessor
+:::tip
+You need to consult the [processor directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor) to check if the PreProcessor required for your model is already supported. If it is, please proceed to the next section. Try not to implement a new PreProcessor.
+:::
+1. Add XXXPreProcess.hpp and XXXPreProcess.cpp in the [processor directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor).
+2. Class declaration. Inherit from the base class PreProcessor, mainly overwrite the Process() function.
+
+Example as follows:
+```cpp
+#ifndef MLLM_XXX_HPP
+#define MLLM_XXX_HPP
+#include "PreProcess.hpp"
+namespace mllm {
+class XXXProcessor:public mllm::PreProcessor {
+public:
+    explicit XXXProcessor(mllm::Tokenizer *tokenizer, int height, int width, bool do_pad, bool do_resize, bool do_normalize, bool do_rescale, std::vector<float> mean) :
+        PreProcessor(tokenizer, height, width, do_pad, do_resize, do_normalize, do_rescale, std::move(mean), std::move(std)) {
+    }
+    void Process(const std::string &text) override;
+    void PreProcessImages(const std::vector<std::string> &images_path) override;
+
+};
+} // namespace mllm
+
+#endif // MLLM_XXX_HPP
+```
+
+## Build Model Structure
+
+**Create a new file named `main_XXXModel.cpp` in the [example directory](https://github.com/UbiquitousLearning/mllm/tree/main/examples) and build it in the [CMakeLists.txt](https://github.com/UbiquitousLearning/mllm/blob/main/CMakeLists.txt).**
+
+Please refer to the [example](https://github.com/UbiquitousLearning/mllm/tree/main/examples) and the [Op list documentation](), and construct the model structure.
+Example 1: To build the CLIP model:
+```cpp
+... ...
+
+void CLIP(Context* c) {
+    auto *i = _Input(c, {}, "input_ids");
+    i = transformer(c, i);
+    auto *p = _Input(c, {}, "input_imgs");
+    p = vit(c, p);
+    i = _Linear( {i}, 512, 512, false, "text_projection");
+    i = *i/i->norm(2);
+    p = _Linear( {p}, 768, 512, false, "visual_projection");
+    p = *p/p->norm(2);
+    auto *o = _Matmul( {i, p}, false, true, "matmul");
+    o = _Scale( {o}, 100.0, 0.0F, false, "scale");
+}
+... ...
+```
+Example 2: Building the Attention Structure:
+```cpp
+... ...
+
+NetTensor *Attention( NetTensor * x, int embedding_size, int hidden_size, int head_size, string name){
+    auto *q =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wq");
+    auto *k =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wk");
+    auto *v =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wv");
+    q = q->view(-1, head_size, -1, hidden_size);
+    k = k->view(-1, head_size, -1, hidden_size);
+    v = v->view(-1, head_size, -1, hidden_size);
+    q = _RoPE( {q}, 2, name + ".q_rope");
+    k = _RoPE( {k}, 2, name + ".k_rope");
+    k = _KVCache( {k},  name + ".k_cache");
+    v = _KVCache( {v}, name + ".v_cache");
+    auto *qk = _Matmul( {q, k}, false, true, name + ".qk");
+    qk = *qk/std::sqrt(hidden_size);
+    qk = _Causalmask( {qk}, name + ".mask");
+    qk = _Softmax( {qk}, DIMENSION, name + ".softmax");
+    auto *o = _Matmul( {qk, v}, false, false, name + ".qkv");
+    o = o->view(-1, 1, -1, hidden_size * head_size);
+    o = _Linear( {o}, hidden_size * head_size, embedding_size, false, name + ".wo");
+    return o;
+}
+... ...
+```
+Note: The "name" parameter in "_Op" is used to identify the operation in the model. It must be unique and should match the corresponding name in the original PyTorch/SafeTensor model that has not been converted. 
+
+For example, you can inspect the names of operations in a ".pth" model using the following code:
+```python
+import torch
+model_path = "/path/to/model.pth"
+model = torch.load(model_path)
+for key in model:
+    print(f"{key}  Shape: {model[key].shape}")
+
+```
+The output will be as follows:
+```
+tok_embeddings.weight  Shape: torch.Size([32000, 4096])
+norm.weight  Shape: torch.Size([4096])
+output.weight  Shape: torch.Size([32000, 4096])
+layers.0.attention.wq.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wk.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wv.weight  Shape: torch.Size([4096, 4096])
+layers.0.attention.wo.weight  Shape: torch.Size([4096, 4096])
+layers.0.feed_forward.w1.weight  Shape: torch.Size([11008, 4096])
+... ...
+```
+The above code will print the part before ".weight" in the "key" values of all operations in the model. 
+This part should match the "name" parameter in the MLLM code. For instance, if the key is `"layers.0.attention.wq.weight"`, the corresponding "name" parameter in MLLM should be `"layers.0.attention.wq"`.
+
+
+## Add PostProcessing
+Add the PostProcessing function in `main_XXXModel.cpp`.
+This function is responsible for handling the output of the model.
+For example:
+
+```cpp
+vector<float> postProcessing(shared_ptr<Tensor> result){
+    vector<float> scores;
+    for (int i = 0; i < result->batch(); ++i) {
+        auto value = result->dataAt<float>(i, 0, 0, 0);
+        scores.push_back(value);
+    }
+    auto token_idx =  softmax(scores);
+    return token_idx;
+}
+```
+
+## Construct the Processing Flow
+
+In the `main_XXXModel.cpp` file, process according to the following flow in the `main()` function:
+
+1. Create a new `Context` and build the model.
+```cpp
+std::unique_ptr<Context> c_ptr(new Context());
+auto *c = c_ptr.get();
+CLIP(c);
+```
+
+2. Choose the backend and build the net from the `Context`.
+```cpp
+BackendConfig bn;
+Net net(bn);
+net.convert(c->sub_param_);
+```
+
+3. Build the executor and load the model weights.
+```cpp
+string model_path = "model.ckpt.mllm";
+ParamLoader param_loader(model_path);
+Executor ex(&param_loader);
+ex.setup(&net);
+```
+
+4. Tokenizer processes input sequences based on the vocabulary.
+```cpp
+string vocab_path = "vocab.mllm";
+auto tokenizer = new BPETokenizer(vocab_path);
+... ...
+
+vector<string> in_strs = {"a photo of a cat"};
+auto tokens_ids = vector<vector<token_id_t>>();
+for (auto in_str : in_strs) {
+    vector<mllm::token_id_t> tokens_id={};
+    tokenizer->tokenize(in_str, tokens_id, true);
+        tokens_ids.push_back(tokens_id);
+}
+shared_ptr<Tensor> input_text = std::make_shared<Tensor>();
+BPETokenizer::tokens2Tensor(&net, tokens_ids, input_text);
+```
+
+5. (Optional) Processor handles other modal inputs such as images.
+```cpp
+shared_ptr<Tensor> input_img = std::make_shared<Tensor>();
+auto* processor = new ClipProcessor(tokenizer);
+processor->PreProcessImages({"cat.jpg"});
+auto images = processor->pixel_values_[0];
+img2Tensor(input_img, net, images);
+```
+
+6. Perform model inference. Note that the input order needs to be the same as the `_Input` order when building the model structure.
+```cpp
+ex.run(&net, {input_text, input_img});
+auto result = ex.result();
+```
+
+7. Perform post-processing.
+```cpp
+auto probs = postProcessing(result[0]);
+```

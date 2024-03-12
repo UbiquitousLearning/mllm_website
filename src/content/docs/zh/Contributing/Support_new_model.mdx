@@ -8,117 +8,83 @@ sidebar:
 :::tip
 在添加新模型前，请参阅[模型列表文档](/zh/roadmap/roadmap/#更多模型)，避免不必要的重复。
 :::
-添加Op包含如下步骤：
-1. （可选）[增加新的Tokenizer](#增加新的Tokenizer)
-1. （可选）[增加新的PreProcessor](#增加新的PreProcessor)
-2. [搭建模型结构](#搭建模型结构)
-2. [添加PostProcessing](#添加PostProcessing)
-3. [构建处理流程](#构建处理流程)
 
-##  增加新的Tokenizer
+开发者需要先在[models](https://github.com/UbiquitousLearning/mllm/tree/main/src/models)中新建以模型名称命名的文件夹,
+之后按照如下步骤添加新模型：
+1. [添加Tokenizer/Processor](#增加模型的Tokenizer/Processor)
+2. [添加配置文件](#添加配置文件)
+3. [添加模型文件](#添加模型文件)
+4. [使用模型](#使用模型)
 
-需要查阅[tokenizer目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers), 检查您想要添加的模型需要的tokenizer是否已经支持，如果已经支持，请跳转至下一章节。
+##  增加模型的Tokenizer/Processor
 
-1. 在[tokenizer目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/tokenizers)下添加XXX/XXXTokenizer.hpp、XXX/XXXTokenizer.cpp。
-2. 类声明。 继承基类Tokenizer，主要实现tokenize()函数。
+1. 在"[models](https://github.com/UbiquitousLearning/mllm/tree/main/src/models)/模型名"文件夹下添加tokenization_XXX.hpp或者processing_XXX.hpp。
+2. 构建XXXTokenizer/Processor。
 
 示例如下：
 ```cpp
-#ifndef MLLM_XXX_HPP
-#define MLLM_XXX_HPP
-#include "tokenizers/Tokenizer.hpp"
+#ifndef TOKENIZATION_XXX_HPP
+#define TOKENIZATION_XXX_HPP
+
 namespace mllm {
-class XXXTokenizer final : public Tokenizer {
+
+class XXXTokenizer final {
     ... ...,
 
 public:
-    vector<std::string> XXX(const std::string &token);
-    void tokenize(const std::string &text, std::vector<token_id_t> &tokens, bool bos) override;
+    explicit XXXTokenizer(const std::string &vocab_file) {
+        ... ...,
+    }
+    Tensor tokenize(std::string &text, int str_i = 0) const {
+        ... ...,
+    }
+    std::pair<std::string, unsigned> detokenize(Tensor& result) {
+        ... ...,
+    }
 };
 } // namespace mllm
 
-#endif // MLLM_XXX_HPP
+#endif // TOKENIZATION_XXX_HPP
 ```
 
-##  增加新的PreProcessor
+## 添加配置文件
 
-需要查阅[processor目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor), 检查您想要添加的模型需要的PreProcessor需要的功能是否已经支持，如果已经支持，请跳转至下一章节。尽量不要实现新的PreProcessor。
-
-1. 在[processor目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/processor)下添加XXXPreProcess.hpp、XXXPreProcess.cpp。
-2. 类声明。 继承基类PreProcessor，主要重写Process()函数。
+1. 在"[models](https://github.com/UbiquitousLearning/mllm/tree/main/src/models)/模型名"文件夹下添加configuration_XXX.hpp。
+2. 构建XXXNameConfig和XXXConfig。
 
 示例如下：
 ```cpp
-#ifndef MLLM_XXX_HPP
-#define MLLM_XXX_HPP
-#include "PreProcess.hpp"
-namespace mllm {
-class XXXProcessor:public mllm::PreProcessor {
+#ifndef CONFIG_XXX_HPP
+#define CONFIG_XXX_HPP
+#include "models/transformer/configuration_transformer.hpp"
+
+using namespace mllm;
+
+class XXXNameConfig : public TransformerNameConfig{
 public:
-    explicit XXXProcessor(mllm::Tokenizer *tokenizer, int height, int width, bool do_pad, bool do_resize, bool do_normalize, bool do_rescale, std::vector<float> mean) :
-        PreProcessor(tokenizer, height, width, do_pad, do_resize, do_normalize, do_rescale, std::move(mean), std::move(std)) {
+    std::string xxx_name;
+    ... ...,
+
+    void init() {
+        ... ...,
     }
-    void Process(const std::string &text) override;
-    void PreProcessImages(const std::vector<std::string> &images_path) override;
-
 };
-} // namespace mllm
 
-#endif // MLLM_XXX_HPP
+class XXXConfig {
+public:
+    XXXNameConfig names_config;
+    ... ...,
+
+    explicit XXXConfig() {
+        names_config.init(type);
+        ... ...,
+    }
+};
+
+#endif // CONFIG_XXX_HPP
 ```
 
-## 搭建模型结构
-
-**在[example目录](https://github.com/UbiquitousLearning/mllm/tree/main/examples)下新建main_XXXModel.cpp文件，并在[CMakeList.txt](https://github.com/UbiquitousLearning/mllm/blob/main/CMakeLists.txt)中构建之。**
-
-请参考[example](https://github.com/UbiquitousLearning/mllm/tree/main/examples)和[Op列表文档]()，搭建模型结构。
-
-实例1： 构建CLIP的模型：
-```cpp
-... ...
-
-void CLIP(Context* c) {
-    auto *i = _Input(c, {}, "input_ids");
-    i = transformer(c, i);
-    auto *p = _Input(c, {}, "input_imgs");
-    p = vit(c, p);
-    i = _Linear( {i}, 512, 512, false, "text_projection");
-    i = *i/i->norm(2);
-    p = _Linear( {p}, 768, 512, false, "visual_projection");
-    p = *p/p->norm(2);
-    auto *o = _Matmul( {i, p}, false, true, "matmul");
-    o = _Scale( {o}, 100.0, 0.0F, false, "scale");
-}
-... ...
-```
-
-实例2： 构建Attention结构：
-```cpp
-... ...
-
-NetTensor *Attention( NetTensor * x, int embedding_size, int hidden_size, int head_size, string name){
-    auto *q =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wq");
-    auto *k =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wk");
-    auto *v =_Linear({x}, embedding_size, hidden_size * head_size, false, name + ".wv");
-    q = q->view(-1, head_size, -1, hidden_size);
-    k = k->view(-1, head_size, -1, hidden_size);
-    v = v->view(-1, head_size, -1, hidden_size);
-    q = _RoPE( {q}, 2, name + ".q_rope");
-    k = _RoPE( {k}, 2, name + ".k_rope");
-    k = _KVCache( {k},  name + ".k_cache");
-    v = _KVCache( {v}, name + ".v_cache");
-    auto *qk = _Matmul( {q, k}, false, true, name + ".qk");
-    qk = *qk/std::sqrt(hidden_size);
-    qk = _Causalmask( {qk}, name + ".mask");
-    qk = _Softmax( {qk}, DIMENSION, name + ".softmax");
-    auto *o = _Matmul( {qk, v}, false, false, name + ".qkv");
-    o = o->view(-1, 1, -1, hidden_size * head_size);
-    o = _Linear( {o}, hidden_size * head_size, embedding_size, false, name + ".wo");
-    return o;
-}
-... ...
-```
-注意： _Op中的的name参数，用于在模型中标识Op，不可重复，且需与模式未转换的pytorch/safetensor模型的对应名称相同。
+注意： XXXNameConfig中的的name参数，用于在模型中标识Op，不可重复，且需与模式未转换的pytorch/safetensor模型的对应名称相同。
 
 例如，您可以通过如下方式查看pth模型中Op的名称：
 ```python
@@ -144,81 +110,101 @@ layers.0.feed_forward.w1.weight  Shape: torch.Size([11008, 4096])
 上述代码将打印出模型中所有Op的“key”值中“.weight”前的部分需与mllm中的name参数相同。
 例如： `"layers.0.attention.wq.weight"`对应的mllm中的name参数应为`"layers.0.attention.wq"`。
 
-## 添加PostProcessing
-在main_XXXModel.cpp中添加PostProcessing函数。
-此函数用于处理模型的输出。
-例如：
+## 添加模型文件
 
+1. 在"[models](https://github.com/UbiquitousLearning/mllm/tree/main/src/models)/模型名"文件夹下添加modeling_XXX.hpp。
+2. 构建XXXModel。
+
+LLaMA的示例如下：
 ```cpp
-vector<float> postProcessing(shared_ptr<Tensor> result){
-    vector<float> scores;
-    for (int i = 0; i < result->batch(); ++i) {
-        auto value = result->dataAt<float>(i, 0, 0, 0);
-        scores.push_back(value);
+class LLaMAModel final : public Module {
+    Layer embedding;
+    vector<LLaMABlock> blocks;
+    Layer norm;
+    Layer lm_head;
+
+public:
+    explicit LLaMAModel(const LLaMAConfig &config) :
+        LLaMAModel(config.vocab_size, config.hidden_dim, config.head_size, config.ffn_hidden, config.block_num, config.RoPE_type, config.cache_limit,
+                   config.names_config, config.names_config.blk_name) {
     }
-    auto token_idx =  softmax(scores);
-    return token_idx;
+    LLaMAModel(int vocab_size, int hidden_dim, int head_size, int ffn_hidden, int block_num, RoPEType RoPE_type, int cache_limit,
+               const LLaMANameConfig &names, const string &base_name) {
+        embedding = Embedding(vocab_size, hidden_dim, names.token_embd_name);
+        blocks = List<LLaMABlock>(block_num, hidden_dim, head_size, ffn_hidden, RoPE_type, cache_limit, names, base_name);
+        norm = RMSNorm(hidden_dim, 1e-6, names.post_norm_name);
+        lm_head = Linear(hidden_dim, vocab_size, false, names.lm_head_name);
+    }
+    vector<Tensor> Forward(vector<Tensor> inputs, vector<std::any> args) override  {
+        auto x = embedding(inputs[0]);
+        for (auto &block : blocks) {
+            x = block({x})[0];
+        }
+        x = norm(x);
+        x = lm_head(x);
+        return {x};
+    }
+};
+```
+
+## 使用模型
+在[example](https://github.com/UbiquitousLearning/mllm/tree/main/examples)中新建文件demo_XXX.cpp。
+
+LLaMA的实例如下:
+
+```cpp
+#include <iostream>
+#include "cmdline.h"
+#include "models/llama/modeling_llama.hpp"
+#include "models/llama/tokenization_llama.hpp"
+#include "processor/PostProcess.hpp"
+
+using namespace mllm;
+
+int main(int argc, char **argv) {
+    cmdline::parser cmdParser;
+    cmdParser.add<string>("vocab", 'v', "specify mllm tokenizer model path", false, "../vocab/llama_vocab.mllm");
+    cmdParser.add<string>("model", 'm', "specify mllm model path", false, "../models/llama-2-7b-chat-q4_k.mllm");
+    cmdParser.add<int>("limits", 'l', "max KV cache size", false, 400);
+    cmdParser.add<int>("thread", 't', "num of threads", false, 4);
+    cmdParser.parse_check(argc, argv);
+
+    string vocab_path = cmdParser.get<string>("vocab");
+    string model_path = cmdParser.get<string>("model");
+    int tokens_limit = cmdParser.get<int>("limits");
+    Layer::cpu_thread = cmdParser.get<int>("thread");
+
+    auto tokenizer = LLaMATokenizer(vocab_path);
+
+    LLaMAConfig config(tokens_limit, "7B", LLAMAROPE);
+    auto model = LLaMAModel(config);
+    model.load(model_path);
+
+    vector<string> in_strs = {
+        " Hello, who are you?",
+        " What can you do?",
+        "Please introduce Beijing University of Posts and Telecommunications."};
+
+    for (int i = 0; i < in_strs.size(); ++i) {
+        auto in_str = in_strs[i];
+        auto input_tensor = tokenizer.tokenize(in_str, i);
+        std::cout << "[Q] " << in_str << std::endl;
+        std::cout << "[A] " << std::flush;
+        for (int step = 0; step < 100; step++) {
+            auto result = model({input_tensor});
+            auto outputs = tokenizer.detokenize(result[0]);
+            auto out_string = outputs.first;
+            auto out_token = outputs.second;
+            if (out_token == 2) {
+                break;
+            }
+            std::cout << out_string << std::flush;
+            chatPostProcessing(out_token, input_tensor, {});
+        }
+        printf("\n");
+    }
+
+    return 0;
 }
-```
 
-## 构建处理流程
-
-在main_XXXModel.cpp的main()中按照如下流程进行处理。
-
-1. 新建Context，构建模型。
-```cpp
-std::unique_ptr<Context> c_ptr(new Context());
-auto *c = c_ptr.get();
-CLIP(c);
-```
-
-2. 选择Backend，从Context构建Net。
-```cpp
-BackendConfig bn;
-Net net(bn);
-net.convert(c->sub_param_);
-```
-
-3. 构建Executor，加载模型权重。
-```cpp
-string model_path = "model.ckpt.mllm";
-ParamLoader param_loader(model_path);
-Executor ex(&param_loader);
-ex.setup(&net);
-```
-
-4. Tokenizer根据词表对输入sequences处理。
-```cpp
-string vocab_path = "vocab.mllm";
-auto tokenizer = new BPETokenizer(vocab_path);
-... ...
-
-vector<string> in_strs = {"a photo of a cat"};
-auto tokens_ids = vector<vector<token_id_t>>();
-for (auto in_str : in_strs) {
-    vector<mllm::token_id_t> tokens_id={};
-    tokenizer->tokenize(in_str, tokens_id, true);
-        tokens_ids.push_back(tokens_id);
-}
-shared_ptr<Tensor> input_text = std::make_shared<Tensor>();
-BPETokenizer::tokens2Tensor(&net, tokens_ids, input_text);
-```
-
-5. (可选)Processor处理图片等其他模态输入。
-```cpp
-shared_ptr<Tensor> input_img = std::make_shared<Tensor>();
-auto* processor = new ClipProcessor(tokenizer);
-processor->PreProcessImages({"cat.jpg"});
-auto images = processor->pixel_values_[0];
-img2Tensor(input_img, net, images);
-```
-
-6. 进行模型推理。注意输入顺序需要与[搭建模型结构](#搭建模型结构)时的`_Input`顺序相同！！
-```cpp
-ex.run(&net, {input_text, input_img});
-auto result = ex.result();
-
-7. 进行postProcessing。
-```cpp
-auto probs = postProcessing(result[0]);
 ```
