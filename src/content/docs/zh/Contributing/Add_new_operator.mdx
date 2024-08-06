@@ -108,7 +108,7 @@ static const vector<string> OpNames = {
 
 ##  在对应的Backend注册实现的Op
 
-1. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L34)文件中引用CPUAbc.hpp
+1. 在对应的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L34)文件中引用CPUAbc.hpp
 2. 在对用的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L86)文件中添加addCreator
 ```cpp
 #include "CPUBackend.hpp"
@@ -128,73 +128,19 @@ void CPUBackend::registerOps() {
 
 
 ## 添加Op的前端表示
-在[express](https://github.com/UbiquitousLearning/mllm/tree/main/src/express)目录下实现Op的前端表示，您可以选择实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71)的方法或者实现为一个[函数](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21)
 
-### Ⅰ. 实现为[NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71)的方法。 
+在[Layer.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Layer.hpp)中通过添加对应的Layer实现Op的前端表示。
 
-1. 在[ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp)中添加声明
 ```cpp
-
-typedef struct TNetTensor {
-    string name;
-    vector<int> shape_;
-    DataType type;
-    NetOp *in;
-    vector<NetOp *> out;
-    NetParameter *subgraph;
-    Context *ctx;
-
-    ... ...
-
-    NetTensor *abc(int param1, bool param2); //<==在此添加
-
-} NetTensor;
-
-```
-2. 在[ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.cpp)中实现函数
-```cpp
-
-NetTensor *TNetTensor::abc*(int param1, bool param2) {
-    Context *ctx =this->ctx;
-    NetTensor *out_tensor = new NetTensor();
-    out_tensor->name = "outtensor-" + name+ "_adc_" + "-00";//
-    ... ...
-    net_op_->name = name+ "_abc_";//保证 name+ "_abc_" 相同
-    ... ...
-    net_op_->param["type"] = ABC;//OpType类型
-    net_op_->param["param1"] = (float)param1; //param保证与CPUOpCreator中的op_param相同
-    net_op_->param["param2"] = (float)param2; //param保证与CPUOpCreator中的op_param相同
-    ... ...
-    return out_tensor;
-}
-
-```
-
-### Ⅱ. 实现为[函数](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21)。
-
-1. 在[Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp)中添加声明
-```cpp
-NetTensor *_Abc(std::vector<NetTensor *> inputs, int param1, bool param2, string name = "");
-```
-2. 在[Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.cpp)中实现函数
-```cpp
-
-NetTensor *_Abc(std::vector<NetTensor *> inputs,  int param1, bool param2, string name) {
-    Context *ctx = inputs[0]->ctx;
-    NetTensor *out_tensor = new NetTensor();
-    if (name.empty()) {
-        name = "Abc" + std::to_string(ctx->idx);
+class ABC final : public Layer {
+public:
+    ABC() = default;
+    ABC(std::string name) {
+        init(std::move(name), OpType::ABC);
     }
-    out_tensor->name = "outtensor-" + name + "-00";
-    out_tensor->type = inputs[0]->type;
-    ctx->idx++;
-    _STORE_OUT_TENSOR
-    _NEW_OP(mllm::ABC)//OpType类型
-    net_op_->param["param1"] = (float)param1; //param保证与CPUOpCreator中的op_param相同
-    net_op_->param["param2"] = (float)param2; //param保证与CPUOpCreator中的op_param相同
-    _UPDATE_INPUT_TENSORS
-    out_tensor->in = net_op_;
-    out_tensor->ctx = ctx;
-    return out_tensor;
-}
+    Tensor &operator()(Tensor &input) {
+        return _1I1O_OP(input);
+    }
+};
+
 ```

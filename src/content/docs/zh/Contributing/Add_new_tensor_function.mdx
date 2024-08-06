@@ -1,0 +1,104 @@
+---
+title: 添加新Tensor函数
+description: 添加新Tensor函数
+sidebar:
+    order: 3
+---
+
+
+:::tip
+在自定义Tensor函数前，请参阅[Op列表文档](/zh/roadmap/roadmap/#更多算子（op）)，避免不必要的重复。
+:::
+
+添加Op包含如下步骤：
+1. 添加对应的Backend的Tensor函数实现([CPU](#cpu))
+2. [添加Tensor函数的类型枚举](#添加Tensor函数的类型枚举)
+2. [在对应的Backend注册实现的Tensor函数](#在对应的Backend注册实现的Tensor函数)
+3. [添加Tensor函数的前端表示](#添加Tensor函数的前端表示)
+
+##  添加对应的Backend的Tensor函数实现
+
+### CPU
+
+在[CPU目录](https://github.com/UbiquitousLearning/mllm/tree/main/src/backends/cpu)下添加[CPUTensorFunction.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/backends/cpu/CPUTensorFunction.hpp)中添加[TensorFunction](https://github.com/UbiquitousLearning/mllm/blob/main/src/Backend.hpp#L19)的子类。
+
+示例如下：
+```cpp
+
+#ifndef CPUTENSORFUNCTION_HPP
+#define CPUTENSORFUNCTION_HPP
+    ... ...
+
+namespace mllm {
+class Tensor;
+
+class CPUabcFunction: public TensorFunction {
+public:
+    void setup(vector<Tensor*> outputs, vector<Tensor*> inputs, vector<float> args) override {    
+        ... ...
+    }
+    void execute(vector<Tensor*> outputs, vector<Tensor*> inputs, vector<float> args) override {
+        ... ...
+    }
+};
+
+} // namespace mllm
+#endif // CPUTENSORFUNCTION_HPP
+```
+
+
+##  添加Tensor函数的类型枚举
+
+在[OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/include/OpDefined.hpp)文件中添加Tensor函数的类型枚举。
+```cpp
+#ifndef MLLM_OPDEFINED_H
+#define MLLM_OPDEFINED_H
+    ... ...
+
+namespace mllm {
+    ... ...
+
+enum TensorFuncType {
+    FUNC_ADD,
+    FUNC_SUB,
+    ... ...
+    FUNC_ABC, //<==在此添加
+};
+
+}
+#endif
+```
+
+
+##  在对应的Backend注册实现的Tensor函数
+
+在对应的[Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L86)文件中添加CPUabcFunction
+```cpp
+    ... ...
+
+void CPUBackend::registerFuncs() {
+    map_function_[TensorFuncType::FUNC_ADD] = new CPUaddFunction();
+    map_function_[TensorFuncType::FUNC_SUB] = new CPUsubFunction();
+    ... ...
+    map_function_[TensorFuncType::FUNC_ABC] = new CPUabcFunction();//<==在此添加
+}
+```
+
+
+## 添加Tensor函数的前端表示
+
+1. 在[Tensor.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.hpp)中注册对应的Tensor函数的前端表示。
+
+```cpp
+Tensor& abc(... ...);
+```
+
+2. 在[Tensor.cpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.cpp)中实现对应的Tensor函数的前端表示。
+
+```cpp
+
+Tensor& Tensor::abc(... ...);{
+    ... ...
+};
+
+```

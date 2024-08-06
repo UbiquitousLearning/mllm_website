@@ -1,0 +1,105 @@
+---
+title: Add New Tensor Function
+description: How to add a new tensor function to the framework.
+sidebar:
+  order: 3
+---
+
+
+
+:::tip
+Before customizing the tensor function, please refer to the [Op list document](/roadmap/roadmap/#more-op) to avoid unnecessary duplication.
+:::
+
+The steps to add an tensor function are as follows:
+1. Add the implementation of the tensor function for the corresponding Backend ([CPU](#cpu)).
+2. [Add the enumeration of the tensor function types](#Add-the-enumeration-of-the-tensor-function-types).
+2. [Register the implemented tensor function for the corresponding Backend](#Register-the-implemented-tensor-function-for-the-corresponding-Backend).
+3. [Add the frontend representation of the tensor function](#Add-the-frontend-representation-of-the-tensor-function).
+
+## Add the implementation of the tensor function for the corresponding Backend
+
+### CPU
+
+Under the [CPU directory](https://github.com/UbiquitousLearning/mllm/tree/main/src/backends/cpu), add the subclass of [TensorFunction](https://github.com/UbiquitousLearning/mllm/blob/main/src/Backend.hpp#L19) in [CPUTensorFunction.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/backends/cpu/CPUTensorFunction.hpp). 
+
+Here is an example:
+```cpp
+
+#ifndef CPUTENSORFUNCTION_HPP
+#define CPUTENSORFUNCTION_HPP
+    ... ...
+
+namespace mllm {
+class Tensor;
+
+class CPUabcFunction: public TensorFunction {
+public:
+    void setup(vector<Tensor*> outputs, vector<Tensor*> inputs, vector<float> args) override {    
+        ... ...
+    }
+    void execute(vector<Tensor*> outputs, vector<Tensor*> inputs, vector<float> args) override {
+        ... ...
+    }
+};
+
+} // namespace mllm
+#endif // CPUTENSORFUNCTION_HPP
+```
+
+
+## Add the enumeration of the tensor function types
+
+Add the enumeration of the tensor function types in the [OpDefined.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/include/OpDefined.hpp) file.
+```cpp
+#ifndef MLLM_OPDEFINED_H
+#define MLLM_OPDEFINED_H
+    ... ...
+
+namespace mllm {
+    ... ...
+
+enum TensorFuncType {
+    FUNC_ADD,
+    FUNC_SUB,
+    ... ...
+    FUNC_ABC, //<==Add Here
+};
+
+}
+#endif
+```
+
+
+## Register the implemented tensor function for the corresponding Backend
+
+Add the CPUabcFunction in the corresponding [Backend.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/backends/cpu/CPUBackend.cpp#L86) file.
+```cpp
+    ... ...
+
+void CPUBackend::registerFuncs() {
+    map_function_[TensorFuncType::FUNC_ADD] = new CPUaddFunction();
+    map_function_[TensorFuncType::FUNC_SUB] = new CPUsubFunction();
+    ... ...
+    map_function_[TensorFuncType::FUNC_ABC] = new CPUabcFunction();//<==Add Here
+}
+```
+
+
+## Add the frontend representation of the tensor function
+
+1. Register the corresponding front-end representation of the Tensor function in [Tensor.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.hpp). 
+
+```cpp
+Tensor& abc(... ...);
+```
+
+2. Implement the corresponding front-end representation of the Tensor function in [Tensor.cpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.cpp). 
+
+```cpp
+
+Tensor& Tensor::abc(... ...);{
+    ... ...
+};
+
+```

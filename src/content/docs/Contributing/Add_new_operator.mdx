@@ -129,73 +129,19 @@ void CPUBackend::registerOps() {
 
 
 ## Add the frontend representation of the Op
-Implement the frontend representation of the Op in the [express](https://github.com/UbiquitousLearning/mllm/tree/main/src/express) directory. You can choose to implement it as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71) or as a [function](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21).
 
-### Ⅰ. Implement as a method of [NetTensor](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp#L71).
+Implement the frontend representation of the Op in the file [Layer.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Layer.hpp).
 
-1. Add the declaration in [ExpressBase.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.hpp)
 ```cpp
-
-typedef struct TNetTensor {
-    string name;
-    vector<int> shape_;
-    DataType type;
-    NetOp *in;
-    vector<NetOp *> out;
-    NetParameter *subgraph;
-    Context *ctx;
-
-    ... ...
-
-    NetTensor *abc(int param1, bool param2); //<==Add here
-
-} NetTensor;
-
-```
-2. Implement the function in [ExpressBase.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/ExpressBase.cpp)
-```cpp
-NetTensor *TNetTensor::abc(int param1, bool param2) {
-    Context *ctx = this->ctx;
-    NetTensor *out_tensor = new NetTensor();
-    out_tensor->name = "outtensor-" + name + "_adc_" + "-00";//
-    ... ...
-    net_op_->name = name + "_abc_"; // ensure that name + "_abc_" is the same
-    ... ...
-    net_op_->param["type"] = ABC; // OpType type
-    net_op_->param["param1"] = (float)param1; // ensure that param is the same as op_param in CPUOpCreator
-    net_op_->param["param2"] = (float)param2; // ensure that param is the same as op_param in CPUOpCreator
-    ... ...
-    return out_tensor;
-}
-
-```
-
-### Ⅱ. Implementation as a [function](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp#L21).
-
-1. Add declaration in [Express.hpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.hpp)
-```cpp
-NetTensor *_Abc(std::vector<NetTensor *> inputs, int param1, bool param2, string name = "");
-```
-2. Implement the function in [Express.cpp](https://github.com/UbiquitousLearning/mllm/blob/main/src/express/Express.cpp)
-```cpp
-
-NetTensor *_Abc(std::vector<NetTensor *> inputs,  int param1, bool param2, string name) {
-    Context *ctx = inputs[0]->ctx;
-    NetTensor *out_tensor = new NetTensor();
-    if (name.empty()) {
-        name = "Abc" + std::to_string(ctx->idx);
+class ABC final : public Layer {
+public:
+    ABC() = default;
+    ABC(std::string name) {
+        init(std::move(name), OpType::ABC);
     }
-    out_tensor->name = "outtensor-" + name + "-00";
-    out_tensor->type = inputs[0]->type;
-    ctx->idx++;
-    _STORE_OUT_TENSOR
-    _NEW_OP(mllm::ABC) // OpType type
-    net_op_->param["param1"] = (float)param1; // ensure that param is the same as op_param in CPUOpCreator
-    net_op_->param["param2"] = (float)param2; // ensure that param is the same as op_param in CPUOpCreator
-    _UPDATE_INPUT_TENSORS
-    out_tensor->in = net_op_;
-    out_tensor->ctx = ctx;
-    return out_tensor;
-}
-```
+    Tensor &operator()(Tensor &input) {
+        return _1I1O_OP(input);
+    }
+};
 
+```
