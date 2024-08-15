@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build --site https://ubiquitouslearning.github.io --base /mllm_website",
     "preview": "astro preview",
     "astro": "astro"
   },
