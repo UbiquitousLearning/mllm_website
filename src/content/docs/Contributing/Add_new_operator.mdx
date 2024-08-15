@@ -139,8 +139,9 @@ public:
     ABC(std::string name) {
         init(std::move(name), OpType::ABC);
     }
-    Tensor &operator()(Tensor &input) {
-        return _1I1O_OP(input);
+    Tensor operator()(Tensor input) {
+        auto ts = run({input}, 1);
+        return ts[0];
     }
 };
 

@@ -91,14 +91,14 @@ void CPUBackend::registerFuncs() {
 1. Register the corresponding front-end representation of the Tensor function in [Tensor.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.hpp). 
 
 ```cpp
-Tensor& abc(... ...);
+Tensor abc(... ...);
 ```
 
 2. Implement the corresponding front-end representation of the Tensor function in [Tensor.cpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.cpp). 
 
 ```cpp
 
-Tensor& Tensor::abc(... ...);{
+Tensor Tensor::abc(... ...);{
     ... ...
 };
 
