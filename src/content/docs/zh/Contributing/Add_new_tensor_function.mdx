@@ -90,14 +90,14 @@ void CPUBackend::registerFuncs() {
 1. 在[Tensor.hpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.hpp)中注册对应的Tensor函数的前端表示。
 
 ```cpp
-Tensor& abc(... ...);
+Tensor abc(... ...);
 ```
 
 2. 在[Tensor.cpp](https://github.com/UbiquitousLearning/mllm/tree/main/src/Tensor.cpp)中实现对应的Tensor函数的前端表示。
 
 ```cpp
 
-Tensor& Tensor::abc(... ...);{
+Tensor Tensor::abc(... ...);{
     ... ...
 };
 
