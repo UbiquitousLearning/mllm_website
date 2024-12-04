@@ -64,37 +64,9 @@ Android Demo App is currently in a very early stage, and it is maintained in a s
 
 :::tip
 Please note, when using the Android Demo App, you need to push the model files and Tokenizer to the /sdcard/Download/model directory on the device before launching the App.
-
-Be sure to organize the files in the following file names:
-| File        | FileName       |
-|-------------|----------------|
-| Fuyu Model  | fuyu.mllm      |
-| Fuyu Vocab  | vocab_uni.mllm |
-| LLaMA Model | llama_2.mllm   |
-| LLaMA Vocab | vocab.mllm     |
 :::
 
-1. Fetch the sub-module
-```bash
-git submodule update --init --recursive # clone the android demo app
-```
-2. Now you can import the project into Android Studio and build it.
-3. If you do not use Android Studio, you may need to manually set up JDK(17+) and Android SDK(30+) environment, and then build it with gradle.
-
-* Build JNI Libs (Optional)
-The mllm JNI Libs Binary is provided along with the Android Demo App. You can find it in the `android/app/src/main/cpp/libs` directory.
-But if you want to build it yourself, you can follow the steps below:
-```bash
-export ANDROID_NDK=/path/to/your/ndk
-cmake -DCMAKE_TOOLCHAIN_FILE="${ANDROID_NDK}/build/cmake/android.toolchain.cmake" -DAPK=ON -DANDROID_ABI="arm64-v8a" -DANDROID_NDK="${ANDROID_NDK}" -DANDROID_PLATFORM=android-28 -B./build_arm/ .
-cmake --build ./build_arm/ --target all -- -j$(nproc)
-```
-The `libmllm_lib.a` should be located in the `build_arm` directory.
-
-For Your Convenience, we also provide a script to build the whole App:
-```bash
-cd scripts && ./build_android_app.sh
-```
+For more details, check the `README.md` file in the `android` directory or visit the [Chatbot Repository](https://github.com/lx200916/ChatBotApp/blob/master/README.md).
 
 </Card>
 
